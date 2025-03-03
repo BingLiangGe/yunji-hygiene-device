@@ -11,7 +11,7 @@ import lombok.Setter;
  **/
 @Setter
 @Getter
-public class SysInfoReportResp extends ReportMsg{
+public class SysInfoReportResp extends ReportMsg {
     private int eventId; // 事件ID 4字节
     private byte sleepMode;
     private byte outLimitStatus; // 出仓 关闭为0
@@ -21,6 +21,7 @@ public class SysInfoReportResp extends ReportMsg{
     private byte battleLevel;
     private byte lockStatus;
     private byte tissueStatus;
+    private byte rssi;
 
     public SysInfoReportResp(ByteBuf byteBuf) {
         super(byteBuf);
@@ -39,5 +40,6 @@ public class SysInfoReportResp extends ReportMsg{
         this.setBattleLevel(bb.readByte());
         this.setLockStatus(bb.readByte());
         this.setTissueStatus(bb.readByte());
+        this.setRssi(bb.readByte());
     }
 }

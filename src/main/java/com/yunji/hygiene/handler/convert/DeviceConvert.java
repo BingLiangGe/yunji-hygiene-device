@@ -22,6 +22,7 @@ public class DeviceConvert {
         devInfo.setDistance(((msg.getDistanceMsb() & 0xFF) << 8) | (msg.getDistanceLsb() & 0xFF));
         devInfo.setBattleLevel((int) msg.getBattleLevel());
         devInfo.setTissueStatus((int) msg.getTissueStatus());
+        devInfo.setRssi((int) msg.getRssi());
         devInfo.setLastTime(new Date());
         return devInfo;
     }

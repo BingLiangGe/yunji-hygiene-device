@@ -96,4 +96,7 @@ public class ContainerPO {
 
     @Column(name = "sleep_status")
     private Integer sleepStatus;
+
+    @Column(name = "rssi")
+    private Integer rssi;
 }

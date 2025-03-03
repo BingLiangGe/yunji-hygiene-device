@@ -22,5 +22,6 @@ public class DeviceInfoDTO implements Serializable {
     private Integer distance;
     private Integer battleLevel;
     private Integer tissueStatus;
+    private Integer rssi; //信号强度
     private Date lastTime;
 }

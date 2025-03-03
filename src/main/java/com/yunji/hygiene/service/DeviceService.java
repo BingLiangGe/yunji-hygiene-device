@@ -99,8 +99,8 @@ public class DeviceService {
     }
 
     @Transactional
-    public void updateCabinet(Long containerId, Integer battleLevel, Integer sleepStatus) {
-        containerRep.updateCabinet(containerId, battleLevel, sleepStatus);
+    public void updateCabinet(Long containerId, Integer battleLevel, Integer sleepStatus,Integer rssi) {
+        containerRep.updateCabinet(containerId, battleLevel, sleepStatus,rssi);
     }
 
     @Transactional
