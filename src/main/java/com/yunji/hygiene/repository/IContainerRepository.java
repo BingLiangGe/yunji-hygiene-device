@@ -42,8 +42,9 @@ public interface IContainerRepository extends JpaRepository<ContainerPO, Long> {
 
     @Modifying
     @Transactional
-    @Query("update ContainerPO set sleepStatus=:sleepStatus,battleLevel=:battleLevel where id = :containerId and delFlag = 0 ")
-    int updateCabinet(@Param("containerId") Long containerId, @Param("battleLevel") Integer battleLevel, @Param("sleepStatus") Integer sleepStatus);
+    @Query("update ContainerPO set sleepStatus=:sleepStatus,battleLevel=:battleLevel,rssi=:rssi where id = :containerId and delFlag = 0 ")
+    int updateCabinet(@Param("containerId") Long containerId, @Param("battleLevel") Integer battleLevel, @Param("sleepStatus") Integer sleepStatus
+            , @Param("rssi") Integer rssi);
 
     @Modifying
     @Transactional

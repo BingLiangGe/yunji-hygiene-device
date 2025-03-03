@@ -73,7 +73,8 @@ public class SysInfoReport extends AbsTranReportMsg {
             deviceService.updateCabinetCell(1, containerPO.getId(), devInfo.getDistance(),
                     devInfo.getInLimitStatus(), devInfo.getOutLimitStatus(), devInfo.getLockStatus());
             // 更新状态到售卖柜表
-            deviceService.updateCabinet(containerPO.getId(), devInfo.getBattleLevel(), devInfo.getSleepStatus());
+            deviceService.updateCabinet(containerPO.getId(), devInfo.getBattleLevel(), devInfo.getSleepStatus()
+            ,devInfo.getRssi());
         }
         CommonResp resp = CommonResp.success(msg, AbsChannelReadHandler.getSerialNumber(ctx.channel()));
         log.info("ReportMsgHandler channelRead0 msg:{}", msg);
