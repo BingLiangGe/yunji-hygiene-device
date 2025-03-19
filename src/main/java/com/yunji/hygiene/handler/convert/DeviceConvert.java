@@ -2,6 +2,7 @@ package com.yunji.hygiene.handler.convert;
 
 import com.yunji.hygiene.entity.domain.resp.report.SysInfoReportResp;
 import com.yunji.hygiene.entity.dto.DeviceInfoDTO;
+import com.yunji.hygiene.entity.dto.WipeDeviceInfoDTO;
 
 import java.util.Date;
 
@@ -11,8 +12,8 @@ import java.util.Date;
  * @description : TODO
  **/
 public class DeviceConvert {
-    public static DeviceInfoDTO convert(SysInfoReportResp msg) {
-        DeviceInfoDTO devInfo = new DeviceInfoDTO();
+    public static WipeDeviceInfoDTO convert(SysInfoReportResp msg) {
+        WipeDeviceInfoDTO devInfo = new WipeDeviceInfoDTO();
         devInfo.setEventId((long) msg.getEventId());
         devInfo.setImei(msg.getHeader().getImei());
         devInfo.setSleepStatus((int) msg.getSleepMode());

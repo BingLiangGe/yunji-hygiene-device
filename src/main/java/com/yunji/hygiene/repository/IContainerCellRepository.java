@@ -16,8 +16,7 @@ public interface IContainerCellRepository extends JpaRepository<ContainerCyclePO
 
     @Transactional
     @Modifying
-    @Query("update ContainerCellPO set distance=:distance,inLimitStatus=:inLimitStatus,outLimitStatus=:outLimitStatus,lockStatus=:lockStatus" +
+    @Query("update ContainerCellPO set distance=:distance" +
             " where delFlag = 0 and ordinal = :ordinal and containerId = :containerId")
-    int cabinetCell(@Param("ordinal") Integer ordinal,@Param("containerId")  Long containerId, @Param("distance") Integer distance,
-                    @Param("inLimitStatus") Integer inLimitStatus,@Param("outLimitStatus")  Integer outLimitStatus, @Param("lockStatus") Integer lockStatus);
+    int cabinetCell(@Param("ordinal") Integer ordinal,@Param("containerId")  Long containerId, @Param("distance") Integer distance);
 }

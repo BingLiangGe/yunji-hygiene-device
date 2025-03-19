@@ -4,8 +4,8 @@ import com.yunji.hygiene.constant.DeviceCacheCode;
 import com.yunji.hygiene.entity.domain.resp.jt808.CommonResp;
 import com.yunji.hygiene.entity.domain.resp.report.ReportMsg;
 import com.yunji.hygiene.entity.domain.resp.report.SysInfoReportResp;
-import com.yunji.hygiene.entity.dto.DeviceInfoDTO;
 import com.yunji.hygiene.entity.dto.TransReportDTO;
+import com.yunji.hygiene.entity.dto.WipeDeviceInfoDTO;
 import com.yunji.hygiene.entity.po.ContainerPO;
 import com.yunji.hygiene.handler.convert.DeviceConvert;
 import com.yunji.hygiene.handler.strategy.jt808.AbsChannelReadHandler;
@@ -38,7 +38,7 @@ public class SysInfoReport extends AbsTranReportMsg {
         String imei = msg.getHeader().getImei();
         SysInfoReportResp sysInfo = (SysInfoReportResp) msg;
         log.info("ReportMsgHandler channelRead0 msg:{}", JsonUtil.toJsonString(msg));
-        DeviceInfoDTO devInfo = DeviceConvert.convert(sysInfo);
+        WipeDeviceInfoDTO devInfo = DeviceConvert.convert(sysInfo);
         if (devInfo.getEventId() != null && devInfo.getEventId() > 0) {
             Date updateTime = deviceService.getUpdateTime(devInfo.getEventId());
             updateTime = updateTime == null ? new Date() : updateTime;
@@ -70,11 +70,10 @@ public class SysInfoReport extends AbsTranReportMsg {
                 deviceService.updateBattle(containerPO.getId(), 1, new Date());
             }
             // 更新状态到格子表
-            deviceService.updateCabinetCell(1, containerPO.getId(), devInfo.getDistance(),
-                    devInfo.getInLimitStatus(), devInfo.getOutLimitStatus(), devInfo.getLockStatus());
+            deviceService.updateCabinetCell(1, containerPO.getId(), devInfo.getDistance());
             // 更新状态到售卖柜表
             deviceService.updateCabinet(containerPO.getId(), devInfo.getBattleLevel(), devInfo.getSleepStatus()
-            ,devInfo.getRssi());
+            ,devInfo.getRssi(),devInfo.getInLimitStatus(), devInfo.getOutLimitStatus(),devInfo.getLockStatus());
         }
         CommonResp resp = CommonResp.success(msg, AbsChannelReadHandler.getSerialNumber(ctx.channel()));
         log.info("ReportMsgHandler channelRead0 msg:{}", msg);

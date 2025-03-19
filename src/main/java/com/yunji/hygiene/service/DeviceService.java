@@ -99,13 +99,13 @@ public class DeviceService {
     }
 
     @Transactional
-    public void updateCabinet(Long containerId, Integer battleLevel, Integer sleepStatus,Integer rssi) {
-        containerRep.updateCabinet(containerId, battleLevel, sleepStatus,rssi);
+    public void updateCabinet(Long containerId, Integer battleLevel, Integer sleepStatus,Integer rssi,Integer inLimitStatus,Integer outLimitStatus,Integer lockStatus) {
+        containerRep.updateCabinet(containerId, battleLevel, sleepStatus,rssi,inLimitStatus,outLimitStatus,lockStatus);
     }
 
     @Transactional
-    public void updateCabinetCell(Integer ordinal, Long containerId, Integer distance, Integer inLimitStatus, Integer outLimitStatus, Integer lockStatus) {
-        cellRepo.cabinetCell(ordinal, containerId, distance, inLimitStatus, outLimitStatus, lockStatus);
+    public void updateCabinetCell(Integer ordinal, Long containerId, Integer distance) {
+        cellRepo.cabinetCell(ordinal, containerId, distance);
     }
 
 //    public String selectVersion(String chipImei) {

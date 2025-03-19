@@ -81,13 +81,5 @@ public class ContainerCellPO {
     @Column(name = "distance")
     private Integer distance;
 
-    @Column(name = "in_limit_status")
-    private Integer inLimitStatus;
-
-    @Column(name = "out_limit_status")
-    private Integer outLimitStatus;
-
-    @Column(name = "lock_status")
-    private Integer lockStatus;
 
 }

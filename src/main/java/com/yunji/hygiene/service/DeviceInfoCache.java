@@ -2,6 +2,7 @@ package com.yunji.hygiene.service;
 
 import com.yunji.hygiene.constant.DeviceCacheCode;
 import com.yunji.hygiene.entity.dto.DeviceInfoDTO;
+import com.yunji.hygiene.entity.dto.WipeDeviceInfoDTO;
 import org.redisson.api.RMap;
 
 /**

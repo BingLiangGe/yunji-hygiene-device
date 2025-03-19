@@ -53,12 +53,6 @@ public class ContainerPO {
     @Column(name = "offline_time")
     private Date offlineTime;
 
-    @Column(name = "type_id")
-    private Long typeId;
-
-    @Column(name = "shape_id")
-    private Long shapeId;
-
     @Column(name = "bind_time")
     private Date bindTime;
 
@@ -97,6 +91,15 @@ public class ContainerPO {
     @Column(name = "sleep_status")
     private Integer sleepStatus;
 
+    @Column(name = "in_limit_status")
+    private Integer inLimitStatus;
+
+    @Column(name = "out_limit_status")
+    private Integer outLimitStatus;
+
     @Column(name = "rssi")
     private Integer rssi;
+
+    @Column(name = "lock_status")
+    private Integer lockStatus;
 }
