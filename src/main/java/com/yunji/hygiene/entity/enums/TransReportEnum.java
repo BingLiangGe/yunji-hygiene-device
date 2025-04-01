@@ -10,7 +10,8 @@ import lombok.Getter;
 @Getter
 public enum TransReportEnum {
     VERSION_INFO("VERSION_INFO", (byte) 4, "版本上报"),
-    SYS_INFO("SYS_INFO", (byte) 7, "状态上报"),
+    WET_WIPE_INFO("WET_WIPE_INFO", (byte) 7, "湿纸巾上报"),
+    HYGIENE_INFO("HYGIENE_INFO",(byte) 8,"卫生柜上报"),
     OTA_READY("OTA_READY", (byte) 10, "ota准备"),
     OTA_DATA_RECEIVE("OTA_DATA_RECEIVE", (byte) 11, "ota数据接受"),
     OTA_DATA_EOP("OTA_DATA_EOP", (byte) 12, "ota_eop");

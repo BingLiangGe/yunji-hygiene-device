@@ -23,19 +23,22 @@ public class TransReportFactory {
     @Resource
     private VersionInfoReport versionInfoReport;
     @Resource
-    private SysInfoReport sysInfoReport;
+    private WetWipeInfoReport wetWipeInfoReport;
     @Resource
     private OtaReadyReport otaReadyAck;
     @Resource
     private OtaDataReceiveReport otaDataReceiveAck;
     @Resource
     private OtaDataEopReport otaDataEopAck;
+    @Resource
+    private HygieneInfoReport hygieneInfoReport;
 
 
     @PostConstruct
     public void init() {
         strategies.put(TransReportEnum.VERSION_INFO.getCmd(), versionInfoReport);
-        strategies.put(TransReportEnum.SYS_INFO.getCmd(), sysInfoReport);
+        strategies.put(TransReportEnum.WET_WIPE_INFO.getCmd(), wetWipeInfoReport);
+        strategies.put(TransReportEnum.HYGIENE_INFO.getCmd(), hygieneInfoReport);
         strategies.put(TransReportEnum.OTA_READY.getCmd(), otaReadyAck);
         strategies.put(TransReportEnum.OTA_DATA_RECEIVE.getCmd(), otaDataReceiveAck);
         strategies.put(TransReportEnum.OTA_DATA_EOP.getCmd(), otaDataEopAck);

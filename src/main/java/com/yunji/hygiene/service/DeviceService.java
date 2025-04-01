@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -35,6 +36,8 @@ public class DeviceService {
 
     @Resource
     private IContainerRepository containerRep;
+    @Resource
+    private IContainerTypeRepository typeRepository;
     @Resource
     private IContainerCycleRepository cycleRep;
     @Resource
@@ -187,5 +190,9 @@ public class DeviceService {
         DeviceFileCache.createInfo(upGradeFileData);
         log.info("UpgradeStrategy strategyTranMsg ready upgrade data:{}", upGradeFileData);
         return true;
+    }
+
+    public BigDecimal getTypeHeight(String typeCode) {
+       return typeRepository.getTypeHeight(typeCode);
     }
 }

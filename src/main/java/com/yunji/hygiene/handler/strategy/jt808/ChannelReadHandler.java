@@ -80,7 +80,7 @@ public class ChannelReadHandler extends SimpleChannelInboundHandler<DataPacket> 
             Channel channel = ctx.channel();
             String imei = ChannelManager.getImei(channel);
             if (state == IdleState.READER_IDLE) {
-                if (!SystemUtil.redisCache.hasKey(DeviceCacheCode.DEVICE_SLEEP)) {
+                if (!SystemUtil.redisCache.hasKey(DeviceCacheCode.DEVICE_SLEEP + imei)) {
                     log.error("客户端{}出现问题,非休眠且长时间没接到客户端数据,即将关闭连接 imei:{}", channel.remoteAddress(), imei);
                     ctx.close();
                     deviceService.cabinetOffline(imei);

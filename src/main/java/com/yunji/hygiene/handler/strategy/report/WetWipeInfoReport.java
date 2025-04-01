@@ -3,7 +3,7 @@ package com.yunji.hygiene.handler.strategy.report;
 import com.yunji.hygiene.constant.DeviceCacheCode;
 import com.yunji.hygiene.entity.domain.resp.jt808.CommonResp;
 import com.yunji.hygiene.entity.domain.resp.report.ReportMsg;
-import com.yunji.hygiene.entity.domain.resp.report.SysInfoReportResp;
+import com.yunji.hygiene.entity.domain.resp.report.WetWipeInfoReportResp;
 import com.yunji.hygiene.entity.dto.TransReportDTO;
 import com.yunji.hygiene.entity.dto.WipeDeviceInfoDTO;
 import com.yunji.hygiene.entity.po.ContainerPO;
@@ -28,7 +28,7 @@ import static java.util.concurrent.TimeUnit.HOURS;
  **/
 @Slf4j
 @Service
-public class SysInfoReport extends AbsTranReportMsg {
+public class WetWipeInfoReport extends AbsTranReportMsg {
 
 
     private static final long EVENT_DIFF_TIME = 10 * 60 * 1000;
@@ -36,15 +36,15 @@ public class SysInfoReport extends AbsTranReportMsg {
     @Override
     public TransReportDTO handleReport(ChannelHandlerContext ctx, ReportMsg msg) {
         String imei = msg.getHeader().getImei();
-        SysInfoReportResp sysInfo = (SysInfoReportResp) msg;
-        log.info("ReportMsgHandler channelRead0 msg:{}", JsonUtil.toJsonString(msg));
+        WetWipeInfoReportResp sysInfo = (WetWipeInfoReportResp) msg;
+        log.info("WetWipeInfoReport channelRead0 msg:{}", JsonUtil.toJsonString(msg));
         WipeDeviceInfoDTO devInfo = DeviceConvert.convert(sysInfo);
         if (devInfo.getEventId() != null && devInfo.getEventId() > 0) {
             Date updateTime = deviceService.getUpdateTime(devInfo.getEventId());
             updateTime = updateTime == null ? new Date() : updateTime;
             long diffTime = System.currentTimeMillis() - updateTime.getTime();
             if (diffTime < EVENT_DIFF_TIME) {
-                log.debug("ReportMsgHandler channelRead0 diffTime:{}", diffTime);
+                log.debug("WetWipeInfoReport channelRead0 diffTime:{}", diffTime);
                 // 拿到设备状态更新事件
                 deviceService.updateEvent(devInfo.getEventId(), JsonUtil.toJsonString(devInfo));
                 // 门全部关上 锁住 认为这个事件指令已经完成
@@ -53,11 +53,11 @@ public class SysInfoReport extends AbsTranReportMsg {
             }
         }
         if (devInfo.getSleepStatus() == 1) {
-            log.info("handleReport sleep imei {}", imei);
+            log.info("WetWipeInfoReport sleep imei {}", imei);
             SystemUtil.redisCache.set(DeviceCacheCode.DEVICE_SLEEP + imei, new Date(), SLEEP_HOURS, HOURS);
         } else {
             SystemUtil.redisCache.delete(DeviceCacheCode.DEVICE_SLEEP + imei);
-            log.info("handleReport wakeup imei {}", imei);
+            log.info("WetWipeInfoReport wakeup imei {}", imei);
         }
         // 数据结果更新到缓存
         DeviceInfoCache.createInfo(devInfo);
@@ -76,12 +76,12 @@ public class SysInfoReport extends AbsTranReportMsg {
             ,devInfo.getRssi(),devInfo.getInLimitStatus(), devInfo.getOutLimitStatus(),devInfo.getLockStatus());
         }
         CommonResp resp = CommonResp.success(msg, AbsChannelReadHandler.getSerialNumber(ctx.channel()));
-        log.info("ReportMsgHandler channelRead0 msg:{}", msg);
+        log.info("WetWipeInfoReport channelRead0 msg:{}", msg);
         return new TransReportDTO(true, true, resp);
     }
 
     @Override
     public ReportMsg getMsg(ByteBuf byteBuf) {
-        return new SysInfoReportResp(byteBuf);
+        return new WetWipeInfoReportResp(byteBuf);
     }
 }

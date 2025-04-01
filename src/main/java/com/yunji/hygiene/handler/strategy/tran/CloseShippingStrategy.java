@@ -14,7 +14,7 @@ public class CloseShippingStrategy implements ITransMsgStrategy{
     @Override
     public TransMsg strategyTranMsg(HygieneCommandDTO cmd) {
         OperateTransMsg rs = new OperateTransMsg();
-        rs.setMessageType(TransEnum.SHIPPING.getIssueType());
+        rs.setMessageType(TransEnum.SHOPPING.getIssueType());
         rs.setOpenNum((byte) 1);
         rs.setAction((byte) 1);
         return rs;

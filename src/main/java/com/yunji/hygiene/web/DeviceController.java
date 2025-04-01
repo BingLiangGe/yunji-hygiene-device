@@ -43,12 +43,12 @@ public class DeviceController {
 
     @PostMapping(value = "/command")
     public Response<String> command(@RequestBody @Valid HygieneCommandDTO cmd) {
-        boolean ping = deviceCallService.ping(cmd.getImei(), false);
-        if (ping) {
+//        boolean ping = deviceCallService.ping(cmd.getImei(), false);
+//        if (ping) {
             boolean command = deviceCallService.command(cmd);
             if (command)
                 return ResponseHelper.success();
-        }
+//        }
         return ResponseHelper.failure("指令下达失败:" + cmd.getImei());
     }
 

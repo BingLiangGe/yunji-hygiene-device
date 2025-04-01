@@ -13,7 +13,7 @@ public enum TransEnum {
     RESTOCK("RESTOCK", (byte) 2, "补货仓门"),
     PING("PING", (byte) 3, "ping机器"),
     GET_VERSION("GET_VERSION", (byte) 4, "获取版本号"),
-    SHIPPING("SHIPPING", (byte) 5, "出货仓门"),
+    SHOPPING("SHIPPING", (byte) 5, "出货仓门"),
     IR_DISTANCE("IR_DISTANCE", (byte) 6, "????"),//保留不用
     SYS_INFO("SYS_INFO", (byte) 7, "状态上报"),
     OTA_READY("OTA_READY", (byte) 10, "ota准备"),

@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * @author : peter-zhu
@@ -17,6 +18,7 @@ public class HygieneCommandDTO {
     @NotBlank(message = "imei不能为空")
     private String imei;
     private int eventId;
+    private List<ShoppingDTO> purchase;
 
     public HygieneCommandDTO(){}
 

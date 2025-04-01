@@ -11,7 +11,7 @@ import lombok.Setter;
  **/
 @Setter
 @Getter
-public class SysInfoReportResp extends ReportMsg {
+public class WetWipeInfoReportResp extends ReportMsg {
     private int eventId; // 事件ID 4字节
     private byte sleepMode;
     private byte outLimitStatus; // 出仓 关闭为0
@@ -23,7 +23,7 @@ public class SysInfoReportResp extends ReportMsg {
     private byte tissueStatus;
     private byte rssi;
 
-    public SysInfoReportResp(ByteBuf byteBuf) {
+    public WetWipeInfoReportResp(ByteBuf byteBuf) {
         super(byteBuf);
     }
 
