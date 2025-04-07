@@ -4,7 +4,7 @@ import com.yunji.hygiene.config.ChannelManager;
 import com.yunji.hygiene.entity.domain.DataPacket;
 import com.yunji.hygiene.entity.domain.DeviceException;
 import com.yunji.hygiene.entity.domain.req.jt808.TransMsg;
-import com.yunji.hygiene.entity.dto.HygieneCommandDTO;
+import com.yunji.hygiene.entity.dto.EnterCommandDTO;
 import com.yunji.hygiene.entity.enums.DeviceErrorEnum;
 import com.yunji.hygiene.entity.enums.TransEnum;
 import com.yunji.hygiene.handler.strategy.jt808.AbsChannelReadHandler;
@@ -28,11 +28,12 @@ import java.util.concurrent.TimeUnit;
 public class DeviceCallService {
 
     public boolean ping(String imei, boolean reportStatus) {
-        return command(new HygieneCommandDTO(TransEnum.PING.getCmd(), reportStatus ? 0 : -1, imei));
+        return command(new EnterCommandDTO(TransEnum.PING.getCmd(), reportStatus ? 0 : -1, imei));
     }
 
-    public boolean command(HygieneCommandDTO dto) {
+    public boolean command(EnterCommandDTO dto) {
         try {
+            log.info("DeviceCallService.command({})", dto);
             String imei = dto.getImei();
             Channel channel = ChannelManager.getChannel(imei);
             if (channel == null)

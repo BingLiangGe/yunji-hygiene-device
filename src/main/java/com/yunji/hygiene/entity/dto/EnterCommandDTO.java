@@ -12,17 +12,17 @@ import java.util.List;
  * @description : TODO
  **/
 @Data
-public class HygieneCommandDTO {
+public class EnterCommandDTO {
     @NotNull(message = "指令不能为空")
     private String cmd;
     @NotBlank(message = "imei不能为空")
     private String imei;
     private int eventId;
-    private List<ShoppingDTO> purchase;
+    private List<DeviceShoppingDTO> dtoList;
 
-    public HygieneCommandDTO(){}
+    public EnterCommandDTO(){}
 
-    public HygieneCommandDTO(String cmd, int eventId, String imei) {
+    public EnterCommandDTO(String cmd, int eventId, String imei) {
         this.cmd = cmd;
         this.eventId = eventId;
         this.imei = imei;
@@ -30,10 +30,11 @@ public class HygieneCommandDTO {
 
     @Override
     public String toString() {
-        return "HygieneCommandDTO{" +
+        return "EnterCommandDTO{" +
                 "cmd='" + cmd + '\'' +
                 ", imei='" + imei + '\'' +
                 ", eventId=" + eventId +
+                ", dtoList=" + dtoList +
                 '}';
     }
 }

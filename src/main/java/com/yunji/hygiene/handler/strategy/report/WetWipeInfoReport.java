@@ -52,6 +52,7 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
                     deviceService.eventFinish(devInfo.getEventId());
             }
         }
+        log.info("WetWipeInfoReport info {}", JsonUtil.toJsonString(sysInfo));
         if (devInfo.getSleepStatus() == 1) {
             log.info("WetWipeInfoReport sleep imei {}", imei);
             SystemUtil.redisCache.set(DeviceCacheCode.DEVICE_SLEEP + imei, new Date(), SLEEP_HOURS, HOURS);

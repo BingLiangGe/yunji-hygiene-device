@@ -2,7 +2,7 @@ package com.yunji.hygiene.handler.strategy.tran;
 
 import com.yunji.hygiene.entity.domain.req.jt808.TransMsg;
 import com.yunji.hygiene.entity.domain.req.trans.OtaReadyTransMsg;
-import com.yunji.hygiene.entity.dto.HygieneCommandDTO;
+import com.yunji.hygiene.entity.dto.EnterCommandDTO;
 import com.yunji.hygiene.entity.dto.UpGradeFileDTO;
 import com.yunji.hygiene.entity.enums.TransEnum;
 import com.yunji.hygiene.service.DeviceFileCache;
@@ -21,7 +21,7 @@ public class UpgradeStrategy implements ITransMsgStrategy {
     private static final Logger log = LoggerFactory.getLogger(UpgradeStrategy.class);
 
     @Override
-    public TransMsg strategyTranMsg(HygieneCommandDTO writeData) {
+    public TransMsg strategyTranMsg(EnterCommandDTO writeData) {
         log.debug("UpgradeStrategy strategyTranMsg getWriteData:{}", JsonUtil.toJsonString(writeData));
         UpGradeFileDTO info = DeviceFileCache.getInfo(writeData.getImei());
         log.debug("UpgradeStrategy strategyTranMsg getInfo:{}", JsonUtil.toJsonString(info));

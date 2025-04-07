@@ -10,6 +10,6 @@ import lombok.EqualsAndHashCode;
  **/
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class HygieneHandleDTO extends HygieneCommandDTO {
+public class EnterHandleDTO extends EnterCommandDTO {
     private String serviceHandle;
 }

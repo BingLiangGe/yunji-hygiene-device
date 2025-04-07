@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
  **/
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class UpgradeCommandDTO extends HygieneCommandDTO {
+public class UpgradeCommandDTO extends EnterCommandDTO {
     private Long fileId;
     private Long infoId;
 

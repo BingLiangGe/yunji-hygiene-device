@@ -1,7 +1,7 @@
 package com.yunji.hygiene.web;
 
 import com.yunji.hygiene.config.ChannelManager;
-import com.yunji.hygiene.entity.dto.HygieneCommandDTO;
+import com.yunji.hygiene.entity.dto.EnterCommandDTO;
 import com.yunji.hygiene.entity.dto.UpgradeCommandDTO;
 import com.yunji.hygiene.entity.po.UpgradeFilePO;
 import com.yunji.hygiene.response.Response;
@@ -42,13 +42,13 @@ public class DeviceController {
     }
 
     @PostMapping(value = "/command")
-    public Response<String> command(@RequestBody @Valid HygieneCommandDTO cmd) {
-//        boolean ping = deviceCallService.ping(cmd.getImei(), false);
-//        if (ping) {
+    public Response<String> command(@RequestBody @Valid EnterCommandDTO cmd) {
+        boolean ping = deviceCallService.ping(cmd.getImei(), false);
+        if (ping) {
             boolean command = deviceCallService.command(cmd);
             if (command)
                 return ResponseHelper.success();
-//        }
+        }
         return ResponseHelper.failure("指令下达失败:" + cmd.getImei());
     }
 
