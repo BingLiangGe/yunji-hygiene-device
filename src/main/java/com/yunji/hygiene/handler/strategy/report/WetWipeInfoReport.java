@@ -37,7 +37,6 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
     public TransReportDTO handleReport(ChannelHandlerContext ctx, ReportMsg msg) {
         String imei = msg.getHeader().getImei();
         WetWipeInfoReportResp sysInfo = (WetWipeInfoReportResp) msg;
-        log.info("WetWipeInfoReport channelRead0 msg:{}", JsonUtil.toJsonString(msg));
         WipeDeviceInfoDTO devInfo = DeviceConvert.convert(sysInfo);
         if (devInfo.getEventId() != null && devInfo.getEventId() > 0) {
             Date updateTime = deviceService.getUpdateTime(devInfo.getEventId());
@@ -52,7 +51,6 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
                     deviceService.eventFinish(devInfo.getEventId());
             }
         }
-        log.info("WetWipeInfoReport info {}", JsonUtil.toJsonString(sysInfo));
         if (devInfo.getSleepStatus() == 1) {
             log.info("WetWipeInfoReport sleep imei {}", imei);
             SystemUtil.redisCache.set(DeviceCacheCode.DEVICE_SLEEP + imei, new Date(), SLEEP_HOURS, HOURS);
@@ -77,7 +75,8 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
             ,devInfo.getRssi(),devInfo.getInLimitStatus(), devInfo.getOutLimitStatus(),devInfo.getLockStatus());
         }
         CommonResp resp = CommonResp.success(msg, AbsChannelReadHandler.getSerialNumber(ctx.channel()));
-        log.info("WetWipeInfoReport channelRead0 msg:{}", msg);
+        log.info("WetWipeInfoReport info {}", JsonUtil.toJsonString(sysInfo));
+        log.debug("WetWipeInfoReport channelRead0 msg:{}", msg);
         return new TransReportDTO(true, true, resp);
     }
 

@@ -36,7 +36,6 @@ public class RegisterMsgHandler extends AbsChannelReadHandler<RegisterMsg> {
 
     @Override
     protected void readData(ChannelHandlerContext ctx, DataPacket msg) {
-        log.debug(msg.toString());
         String imei = ChannelManager.getImei(ctx.channel());
         deviceService.cabinetOnline(imei);
         if (SystemUtil.redisCache().hasKey(DeviceCacheCode.DEVICE_UPGRADE_TASK + imei)) {
@@ -47,6 +46,7 @@ public class RegisterMsgHandler extends AbsChannelReadHandler<RegisterMsg> {
         }
         //默认注册成功
         RegisterResp resp = RegisterResp.success(msg, getSerialNumber(ctx.channel()));
+        log.info("RegisterMsgHandler readData,imei:{} ", msg.getHeader().getImei());
         write(ctx, resp);
     }
 }

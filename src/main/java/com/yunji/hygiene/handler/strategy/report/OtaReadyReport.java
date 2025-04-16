@@ -39,7 +39,7 @@ public class OtaReadyReport extends AbsTranReportMsg {
             otaTransMsg.setEventId(-1);
             log.debug("OtaReadyReport handleReport msg :{}", JsonUtil.toJsonString(msg));
             UpGradeFileDTO upGradeFileData = DeviceFileCache.getInfo(msg.getHeader().getImei());
-            log.debug("OtaReadyReport handleReport success :{}", upGradeFileData);
+            log.info("OtaReadyReport handleReport success :{}", upGradeFileData);
             UpgradeFilePO file = deviceService.getFile(upGradeFileData.getFileId());
             byte[] fileBytes = file.getPack();
             otaTransMsg.setMessageType(TransEnum.OTA_DATA_RECEIVE.getIssueType());

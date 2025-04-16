@@ -31,7 +31,7 @@ public class OtaDataReceiveReport extends AbsTranReportMsg {
         UpgradeResp r = (UpgradeResp) msg;
         log.debug("OtaDataReceiveReport UpgradeResp :{}", JsonUtil.toJsonString(r));
         UpGradeFileDTO upGradeFileData = DeviceFileCache.getInfo(msg.getHeader().getImei());
-        log.debug("OtaDataReceiveReport handleReport :{}", upGradeFileData);
+        log.info("OtaDataReceiveReport handleReport :{}", upGradeFileData);
         if (upGradeFileData != null) {
             UpgradeFilePO file = deviceService.getFile(upGradeFileData.getFileId());
             byte[] fileBytes = file.getPack();

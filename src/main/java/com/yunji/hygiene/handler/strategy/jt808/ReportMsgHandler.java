@@ -28,13 +28,12 @@ public class ReportMsgHandler extends AbsChannelReadHandler<ReportMsg> {
     @Override
     protected void readData(ChannelHandlerContext ctx, DataPacket msg) {
         ReportMsg reportMsg = (ReportMsg) msg;
-        log.debug("ReportMsgHandler readData reportMsg:{}", JsonUtil.toJsonString(reportMsg));
+        log.info("ReportMsgHandler readData reportMsg:{}", JsonUtil.toJsonString(reportMsg));
         ITranReportMsg strategy = TransReportFactory.getStrategy(reportMsg.getMessageType());
         TransReportDTO transAckDTO = strategy.handleReport(ctx, reportMsg);
         if (transAckDTO != null && transAckDTO.isSuccess() && transAckDTO.isTrans()) {
-            log.debug("ReportMsgHandler readData transAckDTO:{}", transAckDTO);
+            log.info("ReportMsgHandler readData transAckDTO:{}", transAckDTO);
             if (transAckDTO.getDataPacket() instanceof TransMsg) {
-                log.debug("ReportMsgHandler  instanceof TransMsg true");
                 TransMsg transMsg = (TransMsg) transAckDTO.getDataPacket();
                 DataPacket packet = convertTransMsg(-1, ctx.channel(),
                         msg.getHeader().getImei(), transMsg);

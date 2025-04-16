@@ -20,15 +20,12 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component(HandleConstant.AUTH_SERVICE)
 @ChannelHandler.Sharable
-public class AuthMsgHandler extends AbsChannelReadHandler<AuthMsg>  {
-
+public class AuthMsgHandler extends AbsChannelReadHandler<AuthMsg> {
     @Override
     protected void readData(ChannelHandlerContext ctx, DataPacket msg) {
-        log.debug(msg.toString());
         ChannelManager.add(msg.getHeader().getImei(), ctx.channel());
         CommonResp resp = CommonResp.success(msg, getSerialNumber(ctx.channel()));
+        log.info("AuthMsgHandler readData,imei:{} ", msg.getHeader().getImei());
         write(ctx, resp);
     }
-
-
 }
