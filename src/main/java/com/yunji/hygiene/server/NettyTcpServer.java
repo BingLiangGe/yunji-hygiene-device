@@ -1,5 +1,6 @@
 package com.yunji.hygiene.server;
 
+import com.yunji.hygiene.config.ChannelManager;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -66,17 +67,20 @@ public class NettyTcpServer {
             log.info("TCP服务启动完毕,port={}", this.port);
         }
     }
-
     /**
-     * 销毁资源
+     * 销毁资源并唤醒设备
      */
     @PreDestroy
-    public void destroy() {
+    public void shutdown() {
+        log.info("正在关闭 Netty 服务，准备广播唤醒所有设备...");
+        ChannelManager.notifyAllDevicesBeforeShutdown();
+        log.info("正在关闭 Netty 服务，已经广播唤醒所有设备...");
         bossGroup.shutdownGracefully().syncUninterruptibly();
+        log.info("已关闭netty boss线程");
         workerGroup.shutdownGracefully().syncUninterruptibly();
+        log.info("已关闭netty work线程");
         businessGroup.shutdownGracefully().syncUninterruptibly();
-        log.info("关闭成功");
+        log.info("已关闭netty business线程");
+        log.info("NettyTcpServer 关闭成功");
     }
-
-
 }

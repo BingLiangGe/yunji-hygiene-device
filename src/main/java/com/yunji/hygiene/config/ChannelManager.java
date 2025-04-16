@@ -1,8 +1,12 @@
 package com.yunji.hygiene.config;
 
+import com.yunji.hygiene.entity.domain.DataPacket;
 import com.yunji.hygiene.entity.domain.DeviceChannel;
 import com.yunji.hygiene.entity.domain.DeviceException;
+import com.yunji.hygiene.entity.domain.req.trans.EmptyTransMsg;
 import com.yunji.hygiene.entity.enums.DeviceErrorEnum;
+import com.yunji.hygiene.entity.enums.TransEnum;
+import com.yunji.hygiene.handler.strategy.jt808.AbsChannelReadHandler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.group.ChannelGroup;
@@ -106,5 +110,17 @@ public class ChannelManager {
             maps.put(entry.getKey(), channel);
         }
         return maps;
+    }
+
+    public static void notifyAllDevicesBeforeShutdown() {
+        EmptyTransMsg pingMsg = new EmptyTransMsg();
+        pingMsg.setEventId(-1);
+        pingMsg.setMessageType(TransEnum.PING.getIssueType());
+        for (Channel channel : channelGroup) {
+            String imei = channel.attr(TERMINAL_IMEI).get();
+            DataPacket packet = AbsChannelReadHandler.convertTransMsg(pingMsg.getEventId(), channel, imei, pingMsg);
+            channel.writeAndFlush(packet);
+            log.info("notify success imei:{}", imei);
+        }
     }
 }

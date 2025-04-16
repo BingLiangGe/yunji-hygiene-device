@@ -18,8 +18,7 @@ public enum TransEnum {
     SYS_INFO("SYS_INFO", (byte) 7, "状态上报"),
     OTA_READY("OTA_READY", (byte) 10, "ota准备"),
     OTA_DATA_RECEIVE("OTA_DATA_RECEIVE", (byte) 11, "ota数据接受"),
-    OTA_DATA_EOP("OTA_DATA_EOP", (byte) 12, "ota_eop"),
-    ;
+    OTA_DATA_EOP("OTA_DATA_EOP", (byte) 12, "ota_eop");
 
     TransEnum(String cmd, byte issueType, String description) {
         this.cmd = cmd;
