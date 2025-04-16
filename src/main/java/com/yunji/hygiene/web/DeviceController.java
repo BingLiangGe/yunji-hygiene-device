@@ -75,10 +75,13 @@ public class DeviceController {
 
     @GetMapping(value = "/status/{imei}")
     public boolean status(@PathVariable String imei) {
-        log.info("ProxyController status params:{}", imei);
         boolean online = ChannelManager.online(imei);
-        if (online)
-            return deviceCallService.ping(imei, true);
+        log.info("hygiene device online status imei:{},online:{}", imei, online);
+        if (online) {
+            boolean ack = deviceCallService.ping(imei, true);
+            log.info("hygiene device ping ack imei:{},online:{}", imei, ack);
+            return ack;
+        }
         return false;
     }
 

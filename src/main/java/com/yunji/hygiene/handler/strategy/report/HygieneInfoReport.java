@@ -5,6 +5,7 @@ import com.yunji.hygiene.entity.domain.resp.report.HygieneInfoReportResp;
 import com.yunji.hygiene.entity.domain.resp.report.ReportMsg;
 import com.yunji.hygiene.entity.dto.HygieneInfoDTO;
 import com.yunji.hygiene.entity.dto.TransReportDTO;
+import com.yunji.hygiene.entity.po.ContainerPO;
 import com.yunji.hygiene.handler.convert.DeviceConvert;
 import com.yunji.hygiene.handler.strategy.jt808.AbsChannelReadHandler;
 import com.yunji.hygiene.service.DeviceInfoCache;
@@ -26,6 +27,7 @@ public class HygieneInfoReport extends AbsTranReportMsg{
     @Override
     public TransReportDTO handleReport(ChannelHandlerContext ctx, ReportMsg msg) {
         HygieneInfoReportResp sysInfo = (HygieneInfoReportResp) msg;
+        String imei = msg.getHeader().getImei();
         log.info("HygieneInfoReport channelRead0 msg:{}", JsonUtil.toJsonString(msg));
         HygieneInfoDTO devInfo = DeviceConvert.convert(sysInfo,deviceService);
         if (devInfo.getEventId() != null && devInfo.getEventId() > 0) {
@@ -43,6 +45,12 @@ public class HygieneInfoReport extends AbsTranReportMsg{
         }
         // 数据结果更新到缓存
         DeviceInfoCache.createInfo(devInfo);
+
+        ContainerPO containerPO = deviceService.findByChipImei(imei);
+        if (containerPO != null) {
+            deviceService.updateHygieneCabinet(containerPO.getId(), (int)sysInfo.getRssi(),(int) sysInfo.getLockStatus());
+        }
+
         CommonResp resp = CommonResp.success(msg, AbsChannelReadHandler.getSerialNumber(ctx.channel()));
         log.info("HygieneInfoReport channelRead0 msg:{}", msg);
         return new TransReportDTO(true, true, resp);

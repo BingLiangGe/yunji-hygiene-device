@@ -46,6 +46,7 @@ public class DeviceConvert {
         BigDecimal typeHeight = deviceService.getTypeHeight(ContainerTypeEnum.HYGIENE.getTypeCode());
         Integer ordinal = 0;
         List<HygieneDetailInfoDTO> list = new ArrayList<>();
+        ordinal = 0;
         for (Short distance : msg.getDistanceList()) {
             ordinal ++;
             Integer tissueStatus = 0;
@@ -53,7 +54,7 @@ public class DeviceConvert {
             if (BigDecimal.valueOf(distance.intValue()).subtract(typeHeight).abs().compareTo(BigDecimal.ONE) > 0)  {
                 tissueStatus =1;
             }
-            list.add(new HygieneDetailInfoDTO(ordinal, distance.intValue(), tissueStatus));
+            list.add(new HygieneDetailInfoDTO(ordinal, distance.intValue(), tissueStatus,(int) msg.getMotorStatusList().get(ordinal-1)));
         }
         devInfo.setInfoList(list);
         devInfo.setLastTime(new Date());
