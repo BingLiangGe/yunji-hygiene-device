@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property resource="application.yml"/>
+    <!-- 日志文件存放路径 -->
+    <!--<springProperty scope="context" name="HOME_PATH" source="logging.file.path"/>-->
+    <property name="HOME_PATH" value="./logs"/>
+
+    <property name="ROLL_PATH" value="${HOME_PATH}/%d{yyyy-MM-dd}"/>
+    <!-- 文件输出格式 -->
+    <!-- 1格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+    <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}:  %msg%n"/>
+    <!-- 日志最大保存数量 -->
+    <property name="MAX_HISTORY" value="30"/>
+    <!-- 日志文件大小 -->
+    <property name="MAX_FILE_SIZE" value="100MB"/>
+    <!--总存档最大的大小-->
+    <property name="TOTAL_CAPACITY" value="5GB"/>
+
+    <!-- INFO文件，记录INFO级别日志 -->
+    <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 实时输出的日志文件 -->
+        <file>${HOME_PATH}/logs_infos.log</file>
+        <append>true</append>
+        <!-- 历史日志分块，配置滚动的策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 日志名称的格式 -->
+            <fileNamePattern>${ROLL_PATH}/logs_infos.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- 保存的最长时间：天数 -->
+            <MaxHistory>${MAX_HISTORY}</MaxHistory>
+            <!--日志文件最大的大小-->
+            <MaxFileSize>${MAX_FILE_SIZE}</MaxFileSize>
+            <!--总存档最大的大小-->
+            <totalSizeCap>${TOTAL_CAPACITY}</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+        <!-- 过滤掉非INFO级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!-- 过滤的级别 -->
+            <level>INFO</level>
+            <!-- 匹配时的操作：接收(记录) -->
+            <onMatch>ACCEPT</onMatch>
+            <!-- 不匹配时的操作：拒绝(不记录) -->
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- ERROR文件，记录ERROR级别日志 -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 实时输出的日志文件 -->
+        <file>${HOME_PATH}/logs_error.log</file>
+        <append>true</append>
+        <!-- 历史日志分块，配置滚动的策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 日志名称的格式 -->
+            <fileNamePattern>${ROLL_PATH}/logs_error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- 保存的最长时间：天数 -->
+            <MaxHistory>${MAX_HISTORY}</MaxHistory>
+            <!--日志文件最大的大小-->
+            <MaxFileSize>${MAX_FILE_SIZE}</MaxFileSize>
+            <!--总存档最大的大小-->
+            <totalSizeCap>${TOTAL_CAPACITY}</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+        <!-- 过滤掉非ERROR日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!-- 过滤的级别 -->
+            <level>ERROR</level>
+            <!-- 匹配时的操作：接收(记录) -->
+            <onMatch>ACCEPT</onMatch>
+            <!-- 不匹配时的操作：拒绝(不记录) -->
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- DEBUG文件，记录DEBUG级别日志 -->
+    <appender name="DEBUG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 实时输出的日志文件 -->
+        <file>${HOME_PATH}/logs_debug.log</file>
+        <append>true</append>
+        <!-- 历史日志分块，配置滚动的策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 日志名称的格式 -->
+            <fileNamePattern>${ROLL_PATH}/logs_debug.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- 保存的最长时间：天数 -->
+            <MaxHistory>${MAX_HISTORY}</MaxHistory>
+            <!--日志文件最大的大小-->
+            <MaxFileSize>${MAX_FILE_SIZE}</MaxFileSize>
+            <!--总存档最大的大小-->
+            <totalSizeCap>${TOTAL_CAPACITY}</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+        <!-- 过滤掉非DEBUG的日志,即此日志文件中只会输出debug日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!-- 过滤的级别 -->
+            <level>DEBUG</level>
+            <!-- 匹配时的操作：接收(记录) -->
+            <onMatch>ACCEPT</onMatch>
+            <!-- 不匹配时的操作：拒绝(不记录) -->
+            <onMismatch>DENY</onMismatch>>
+        </filter>
+    </appender>
+
+    <!-- TRACE文件，记录TRACE级别日志 -->
+    <appender name="TRACE_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 实时输出的日志文件 -->
+        <file>${HOME_PATH}/logs_trace.log</file>
+        <append>true</append>
+        <!-- 历史日志分块，配置滚动的策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 日志名称的格式 -->
+            <fileNamePattern>${ROLL_PATH}/logs_trace.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- 保存的最长时间：天数 -->
+            <MaxHistory>${MAX_HISTORY}</MaxHistory>
+            <!--日志文件最大的大小-->
+            <MaxFileSize>${MAX_FILE_SIZE}</MaxFileSize>
+            <!--总存档最大的大小-->
+            <totalSizeCap>${TOTAL_CAPACITY}</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+        <!-- 过滤掉非TRACE的日志,即此日志文件中只会输出trace日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!-- 过滤的级别 -->
+            <level>TRACE</level>
+            <!-- 匹配时的操作：接收(记录) -->
+            <onMatch>ACCEPT</onMatch>
+            <!-- 不匹配时的操作：拒绝(不记录) -->
+            <onMismatch>DENY</onMismatch>>
+        </filter>
+    </appender>
+
+    <!-- SQL文件，记录DEBUG级别日志 -->
+    <appender name="SQL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 实时输出的日志文件 -->
+        <file>${HOME_PATH}/logs_sql.log</file>
+        <append>true</append>
+        <!-- 历史日志分块，配置滚动的策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 日志名称的格式 -->
+            <fileNamePattern>${ROLL_PATH}/logs_sql.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- 保存的最长时间：天数 -->
+            <MaxHistory>${MAX_HISTORY}</MaxHistory>
+            <!--日志文件最大的大小-->
+            <MaxFileSize>${MAX_FILE_SIZE}</MaxFileSize>
+            <!--总存档最大的大小-->
+            <totalSizeCap>${TOTAL_CAPACITY}</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+        <!-- 过滤掉非debug的日志,即此日志文件中只会输出debug日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!-- 过滤的级别 -->
+            <level>DEBUG</level>
+            <!-- 匹配时的操作：接收(记录) -->
+            <onMatch>ACCEPT</onMatch>
+            <!-- 不匹配时的操作：拒绝(不记录) -->
+            <onMismatch>DENY</onMismatch>>
+        </filter>
+    </appender>
+
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="io.netty.handler.logging.LoggingHandler" level="OFF"/>
+
+    <!-- 控制台输出 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <springProfile name="dev">
+        <!-- 开发环境时激活 -->
+        <root level="TRACE">
+            <appender-ref ref="INFO_FILE"/>
+            <appender-ref ref="ERROR_FILE"/>
+            <appender-ref ref="SQL_FILE"/>
+            <appender-ref ref="DEBUG_FILE"/>
+            <appender-ref ref="TRACE_FILE"/>
+            <appender-ref ref="STDOUT"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="test">
+        <!-- 测试环境时激活 -->
+        <root level="DEBUG">
+            <appender-ref ref="INFO_FILE"/>
+            <appender-ref ref="ERROR_FILE"/>
+            <appender-ref ref="SQL_FILE"/>
+            <appender-ref ref="STDOUT"/>
+            <appender-ref ref="DEBUG_FILE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="prod">
+        <!-- 生产环境时激活 -->
+        <root level="INFO">
+            <appender-ref ref="INFO_FILE"/>
+            <appender-ref ref="ERROR_FILE"/>
+        </root>
+    </springProfile>
+
+
+    <!-- 相当于logger元素，只是name值已经确定为root了 -->
+    <!--    <root level="INFO">-->
+    <!--        <appender-ref ref="INFO_FILE" />-->
+    <!--        <appender-ref ref="ERROR_FILE" />-->
+    <!--        <appender-ref ref="DEBUG_FILE" />-->
+    <!--        <appender-ref ref="STDOUT" />-->
+    <!--    </root>-->
+</configuration>

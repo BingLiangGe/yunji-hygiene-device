@@ -1,13 +1,7 @@
 package com.yunji.hygiene.handler.strategy.report;
 
-import com.yunji.hygiene.constant.DeviceCacheCode;
-import com.yunji.hygiene.constant.DeviceLockCode;
 import com.yunji.hygiene.entity.domain.resp.report.ReportMsg;
 import com.yunji.hygiene.entity.dto.TransReportDTO;
-import com.yunji.hygiene.entity.dto.UpGradeFileDTO;
-import com.yunji.hygiene.service.DeviceFileCache;
-import com.yunji.hygiene.service.SystemUtil;
-import com.yunji.hygiene.util.LockUtil;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
