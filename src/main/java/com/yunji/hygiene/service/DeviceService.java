@@ -12,6 +12,7 @@ import com.yunji.hygiene.entity.po.ContainerCyclePO;
 import com.yunji.hygiene.entity.po.ContainerPO;
 import com.yunji.hygiene.entity.po.UpgradeFilePO;
 import com.yunji.hygiene.repository.*;
+import com.yunji.hygiene.util.JsonUtil;
 import com.yunji.hygiene.util.LockUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -59,45 +60,48 @@ public class DeviceService {
         return containerRep.findByChipImeiAndDelFlag(chip, 0);
     }
 
-    @Transactional(rollbackFor = Exception.class)
     public void cabinetOnline(String imei) {
-        containerRep.cabinetOnline(imei, new Date());
+        int i = containerRep.cabinetOnline(imei, new Date());
+        log.info("DeviceService cabinet online rs:{} imei:{}", i, imei);
         handleCycle(imei, OnlineStatus.ONLINE.getCode());
     }
 
-    @Transactional(rollbackFor = Exception.class)
     public void cabinetOffline(String imei) {
-        containerRep.cabinetOffline(imei, new Date());
+        int i = containerRep.cabinetOffline(imei, new Date());
+        log.info("DeviceService cabinet offline rs:{} imei:{}", i, imei);
         handleCycle(imei, OnlineStatus.OFFLINE.getCode());
     }
 
     public void handleCycle(String imei, Integer status) {
         Date date = new Date();
         String key = DeviceLockCode.DEVICE_CYCLE_LOCK + imei;
-        boolean getLock = LockUtil.tryLock(key, 3, 10, TimeUnit.SECONDS);
-        try {
-            if (getLock) {
-                ContainerPO container = containerRep.findByChipImeiAndDelFlag(imei, 0);
-                if (container != null) {
-                    ContainerCyclePO newestCycle = cycleRep.getNewestCycle(imei);
-                    ContainerCyclePO cycle = new ContainerCyclePO();
-                    cycle.setContainerId(container.getId());
-                    cycle.setCycleType(status);
-                    cycle.setCreateTime(date);
-                    cycle.setChipImei(imei);
-                    cycle.setStartTime(date);
-                    if (newestCycle != null) {
-                        if (!status.equals(newestCycle.getCycleType())) {
-                            cycleRep.modifyNewestCycle(date, newestCycle.getId());
-                        }
-                    } else {
-                        cycleRep.save(cycle);
-                    }
+//        boolean getLock = LockUtil.tryLock(key, 3, 10, TimeUnit.SECONDS);
+//        try {
+//            if (getLock) {
+        ContainerPO container = containerRep.findByChipImeiAndDelFlag(imei, 0);
+        if (container != null) {
+            ContainerCyclePO newestCycle = cycleRep.getNewestCycle(imei);
+            log.debug("DeviceService cabinet newestCycle {}", JsonUtil.toJsonString(newestCycle));
+            ContainerCyclePO cycle = new ContainerCyclePO();
+            cycle.setContainerId(container.getId());
+            cycle.setCycleType(status);
+            cycle.setCreateTime(date);
+            cycle.setChipImei(imei);
+            cycle.setStartTime(date);
+            if (newestCycle != null) {
+                log.debug("DeviceService cabinet modifyNewestCycle {}", JsonUtil.toJsonString(newestCycle));
+                if (!status.equals(newestCycle.getCycleType())) {
+                    cycleRep.modifyNewestCycle(date, newestCycle.getId());
                 }
+            } else {
+                log.debug("DeviceService cabinet save cycle {}", JsonUtil.toJsonString(cycle));
+                cycleRep.save(cycle);
             }
-        } finally {
-            LockUtil.unlock(key);
         }
+//            }
+//        } finally {
+//            LockUtil.unlock(key);
+//        }
     }
 
     @Transactional

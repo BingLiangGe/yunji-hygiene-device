@@ -35,17 +35,17 @@ public class AuthMsgHandler extends AbsChannelReadHandler<AuthMsg> {
 
     @Override
     protected void readData(ChannelHandlerContext ctx, DataPacket msg) {
-        String imei = ChannelManager.getImei(ctx.channel());
-        deviceService.cabinetOnline(imei);
+        String imei = msg.getHeader().getImei();
         if (SystemUtil.redisCache().hasKey(DeviceCacheCode.DEVICE_UPGRADE_TASK + imei)) {
             UpGradeFileDTO info = DeviceFileCache.getInfo(imei);
             if (info != null)
                 deviceCallService.command(new UpgradeCommandDTO(TransStrategyEnum.DEVICE_GRADE.name(), -1, imei
                         , info.getFileId(), info.getInfoId()));
         }
-        ChannelManager.add(msg.getHeader().getImei(), ctx.channel());
+        deviceService.cabinetOnline(imei);
+        ChannelManager.add(imei, ctx.channel());
         CommonResp resp = CommonResp.success(msg, getSerialNumber(ctx.channel()));
-        log.info("AuthMsgHandler readData,imei:{} ", msg.getHeader().getImei());
+        log.info("AuthMsgHandler readData,imei:{} ", imei);
         write(ctx, resp);
     }
 }
