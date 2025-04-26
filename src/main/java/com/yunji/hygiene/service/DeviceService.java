@@ -62,16 +62,16 @@ public class DeviceService {
     @Transactional(rollbackFor = Exception.class)
     public void cabinetOnline(String imei) {
         containerRep.cabinetOnline(imei, new Date());
-        handleCycle(imei, true);
+        handleCycle(imei, OnlineStatus.ONLINE.getCode());
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void cabinetOffline(String imei) {
         containerRep.cabinetOffline(imei, new Date());
-        handleCycle(imei, false);
+        handleCycle(imei, OnlineStatus.OFFLINE.getCode());
     }
 
-    public void handleCycle(String imei, boolean online) {
+    public void handleCycle(String imei, Integer status) {
         Date date = new Date();
         String key = DeviceLockCode.DEVICE_CYCLE_LOCK + imei;
         boolean getLock = LockUtil.tryLock(key, 3, 10, TimeUnit.SECONDS);
@@ -79,21 +79,20 @@ public class DeviceService {
             if (getLock) {
                 ContainerPO container = containerRep.findByChipImeiAndDelFlag(imei, 0);
                 if (container != null) {
+                    ContainerCyclePO newestCycle = cycleRep.getNewestCycle(imei);
                     ContainerCyclePO cycle = new ContainerCyclePO();
                     cycle.setContainerId(container.getId());
+                    cycle.setCycleType(status);
                     cycle.setCreateTime(date);
                     cycle.setChipImei(imei);
                     cycle.setStartTime(date);
-                    if (online) {
-                        cycle.setCycleType(OnlineStatus.ONLINE.getCode());
-                        Long newestCycleId = cycleRep.getNewestCycleId(imei, OnlineStatus.OFFLINE.getCode());
-                        cycleRep.modifyNewestCycle(date, newestCycleId);
+                    if (newestCycle != null) {
+                        if (!status.equals(newestCycle.getCycleType())) {
+                            cycleRep.modifyNewestCycle(date, newestCycle.getId());
+                        }
                     } else {
-                        cycle.setCycleType(OnlineStatus.OFFLINE.getCode());
-                        Long newestCycleId = cycleRep.getNewestCycleId(imei, OnlineStatus.ONLINE.getCode());
-                        cycleRep.modifyNewestCycle(date, newestCycleId);
+                        cycleRep.save(cycle);
                     }
-                    cycleRep.save(cycle);
                 }
             }
         } finally {
@@ -102,8 +101,8 @@ public class DeviceService {
     }
 
     @Transactional
-    public void updateCabinet(Long containerId, Integer battleLevel, Integer sleepStatus,Integer rssi,Integer inLimitStatus,Integer outLimitStatus,Integer lockStatus) {
-        containerRep.updateCabinet(containerId, battleLevel, sleepStatus,rssi,inLimitStatus,outLimitStatus,lockStatus);
+    public void updateCabinet(Long containerId, Integer battleLevel, Integer sleepStatus, Integer rssi, Integer inLimitStatus, Integer outLimitStatus, Integer lockStatus) {
+        containerRep.updateCabinet(containerId, battleLevel, sleepStatus, rssi, inLimitStatus, outLimitStatus, lockStatus);
     }
 
     @Transactional
@@ -193,6 +192,6 @@ public class DeviceService {
     }
 
     public BigDecimal getTypeHeight(String typeCode) {
-       return typeRepository.getTypeHeight(typeCode);
+        return typeRepository.getTypeHeight(typeCode);
     }
 }
