@@ -12,4 +12,5 @@ public class HygieneDetailInfoDTO implements Serializable {
     private Integer ordinal;  // 格子号
     private Integer distance;  // 距离
     private Integer tissueStatus; // 是否有货
+    private Integer motorStatus; // 马达状态
 }

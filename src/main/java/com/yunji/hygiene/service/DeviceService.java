@@ -198,4 +198,8 @@ public class DeviceService {
     public BigDecimal getTypeHeight(String typeCode) {
         return typeRepository.getTypeHeight(typeCode);
     }
+
+    public void updateHygieneCabinet(Long id, Integer rssi, Integer lockStatus) {
+        containerRep.updateHygieneCabinet(id,rssi,lockStatus);
+    }
 }

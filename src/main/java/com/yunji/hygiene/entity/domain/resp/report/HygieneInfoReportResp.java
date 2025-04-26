@@ -17,6 +17,7 @@ public class HygieneInfoReportResp extends ReportMsg {
     private byte rssi;
     private List<Byte> limitList;
     private List<Short> distanceList;
+    private List<Byte> motorStatusList;
 
     public HygieneInfoReportResp(ByteBuf byteBuf) {
         super(byteBuf);
@@ -39,6 +40,11 @@ public class HygieneInfoReportResp extends ReportMsg {
             distanceList.add(bb.readShort());
         }
         this.setDistanceList(distanceList);
+        List<Byte> motorStatusList = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            motorStatusList.add(bb.readByte());
+        }
+        this.setMotorStatusList(motorStatusList);
     }
 
     @Override
