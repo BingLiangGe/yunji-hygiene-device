@@ -102,4 +102,11 @@ public class ContainerPO {
 
     @Column(name = "lock_status")
     private Integer lockStatus;
+
+    @Column(name = "runtime_status")
+    private Integer runtimeStatus;
+
+    @Column(name = "runtime_error")
+    private String runtimeError;
+
 }
