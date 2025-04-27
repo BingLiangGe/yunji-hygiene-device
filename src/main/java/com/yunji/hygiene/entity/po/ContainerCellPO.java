@@ -81,5 +81,7 @@ public class ContainerCellPO {
     @Column(name = "distance")
     private Integer distance;
 
+    @Column(name = "infrared_status")
+    private Integer infraredStatus;
 
 }

@@ -57,4 +57,8 @@ public interface IContainerRepository extends JpaRepository<ContainerPO, Long> {
     @Query("update ContainerPO  set rssi=:rssi,lockStatus=:lockStatus where id=:containerId and delFlag=0")
     void updateHygieneCabinet(@Param("containerId") Long containerId,@Param("rssi") Integer rssi,@Param("lockStatus") Integer lockStatus);
 
+    @Modifying
+    @Transactional
+    @Query("update ContainerPO  set runtimeStatus=:runtimeStatus,runtimeError=:runtimeError where id=:containerId and delFlag=0")
+    void updateCabinetRuntime(@Param("containerId") Long id,@Param("runtimeStatus") Integer runtimeStatus,@Param("runtimeError") String runtimeError);
 }

@@ -199,4 +199,8 @@ public class DeviceService {
     public void updateHygieneCabinet(Long id, Integer rssi, Integer lockStatus) {
         containerRep.updateHygieneCabinet(id,rssi,lockStatus);
     }
+
+    public void updateCabinetRuntime(Long id, Integer runtimeStatus, String runtimeError) {
+        containerRep.updateCabinetRuntime(id,runtimeStatus,runtimeError);
+    }
 }
