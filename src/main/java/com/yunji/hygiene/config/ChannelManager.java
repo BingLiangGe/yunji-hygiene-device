@@ -36,16 +36,30 @@ public class ChannelManager {
 
     //public static final AttributeKey<UpGradeFileData> FILE_DATA_KEY = AttributeKey.valueOf("fileData");
 
-    private static final ChannelFutureListener remover = future -> {
-        String imei = future.channel().attr(TERMINAL_IMEI).get();
-        DeviceChannel deviceChannel = channelIdMap.get(imei);
-        if (deviceChannel != null && deviceChannel.getChannelId() == future.channel().id()) {
-            Channel channel = channelGroup.find(deviceChannel.getChannelId());
-//            byte[] byteBuf = channel.attr(ITranReportMsg.FILE_DATA_KEY).get();
-//            if (byteBuf != null)
-//                channel.attr(ITranReportMsg.FILE_DATA_KEY).set(null);
-            channelGroup.remove(channel);
-            channelIdMap.remove(imei);
+    public static final ChannelFutureListener remover = future -> {
+        try {
+//            String imei = future.channel().attr(TERMINAL_IMEI).get();
+//            DeviceChannel deviceChannel = channelIdMap.get(imei);
+//            if (deviceChannel != null && deviceChannel.getChannelId() == future.channel().id()) {
+//                Channel channel = channelGroup.find(deviceChannel.getChannelId());
+//    //            byte[] byteBuf = channel.attr(ITranReportMsg.FILE_DATA_KEY).get();
+//    //            if (byteBuf != null)
+//    //                channel.attr(ITranReportMsg.FILE_DATA_KEY).set(null);
+//                channelGroup.remove(channel);
+//                channelIdMap.remove(imei);
+//            }
+            String imei = future.channel().attr(TERMINAL_IMEI).get();
+            DeviceChannel deviceChannel = channelIdMap.get(imei);
+            if (deviceChannel != null && deviceChannel.getChannelId() == future.channel().id()) {
+                Channel channel = channelGroup.find(deviceChannel.getChannelId());
+                if (channel != null) {
+                    channelGroup.remove(channel);
+                    channel.attr(TERMINAL_IMEI).set(null); // <-- 关键，加上
+                }
+                channelIdMap.remove(imei);
+            }
+        } catch (Exception e) {
+            log.error("Error during channel removal", e);
         }
     };
 
@@ -88,8 +102,10 @@ public class ChannelManager {
         lock.lock();
         try {
             Channel channel = getChannel(imei);
-            if (channel != null)
+            if (channel != null) {
+                channel.attr(TERMINAL_IMEI).set(null);
                 channel.close();
+            }
         } finally {
             lock.unlock();
         }

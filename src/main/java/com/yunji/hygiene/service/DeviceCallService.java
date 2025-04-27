@@ -16,6 +16,7 @@ import io.netty.channel.ChannelFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -27,8 +28,16 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class DeviceCallService {
 
+    @Resource
+    private DeviceService deviceService;
+
     public boolean ping(String imei, boolean reportStatus) {
-        return command(new EnterCommandDTO(TransEnum.PING.getCmd(), reportStatus ? 0 : -1, imei));
+        boolean ack = command(new EnterCommandDTO(TransEnum.PING.getCmd(), reportStatus ? 0 : -1, imei));
+        if (ack)
+            deviceService.cabinetOnline(imei,false);
+        else
+            deviceService.cabinetOffline(imei,false);
+        return ack;
     }
 
     public boolean command(EnterCommandDTO dto) {

@@ -60,9 +60,10 @@ public class ChannelReadHandler extends SimpleChannelInboundHandler<DataPacket> 
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         if (ctx.pipeline().last() == this) {
             Channel channel = ctx.channel();
+            String imei = ChannelManager.getImei(channel);
             log.debug("BaseChannelReadHandler channelInactive：{}", ChannelManager.getImei(channel));
+            deviceService.cabinetOffline(imei, true);
             super.channelInactive(ctx);
-            ctx.close();
         }
     }
 
@@ -82,8 +83,8 @@ public class ChannelReadHandler extends SimpleChannelInboundHandler<DataPacket> 
             if (state == IdleState.READER_IDLE) {
                 if (!SystemUtil.redisCache.hasKey(DeviceCacheCode.DEVICE_SLEEP + imei)) {
                     log.error("客户端{}出现问题,非休眠且长时间没接到客户端数据,即将关闭连接 imei:{}", channel.remoteAddress(), imei);
+                    deviceService.cabinetOffline(imei, true);
                     ctx.close();
-                    deviceService.cabinetOffline(imei);
                 }
             } else if (state == IdleState.WRITER_IDLE) {
                 log.error("客户端{}写入超时", channel.remoteAddress());

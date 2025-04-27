@@ -24,12 +24,12 @@ public interface IContainerRepository extends JpaRepository<ContainerPO, Long> {
 
     @Modifying
     @Transactional
-    @Query("update ContainerPO set onlineTime = :time,onlineStatus=1 where chipImei = :chip and delFlag = 0 and onlineStatus=0")
+    @Query("update ContainerPO set onlineTime = :time,onlineStatus=1 where chipImei = :chip and delFlag = 0")
     int cabinetOnline(@Param("chip") String chip, @Param("time") Date time);
 
     @Modifying
     @Transactional
-    @Query("update ContainerPO set offlineTime = :time,onlineStatus=0 where chipImei = :chip and delFlag = 0 and onlineStatus=1")
+    @Query("update ContainerPO set offlineTime = :time,onlineStatus=0 where chipImei = :chip and delFlag = 0")
     int cabinetOffline(@Param("chip") String chip, @Param("time") Date time);
 
     @Modifying

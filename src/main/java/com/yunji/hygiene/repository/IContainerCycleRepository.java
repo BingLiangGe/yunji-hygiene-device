@@ -20,8 +20,8 @@ public interface IContainerCycleRepository extends JpaRepository<ContainerCycleP
 //            " VALUES ( #{containerId}, #{chipImei}, #{startTime}, #{endTime}, #{cycleType})")
 //    int insertCycle(ContainerCyclePO containerCycle);
 
-    @Query("SELECT max(id) FROM ContainerCyclePO WHERE chipImei = :chip and cycleType =:cycleType")
-    Long getNewestCycleId(@Param("chip") String chip, @Param("cycleType") Integer cycleType);
+    @Query("SELECT c FROM ContainerCyclePO c WHERE c.id = (SELECT MAX(c2.id) FROM ContainerCyclePO c2 WHERE c2.chipImei = :chip)")
+    ContainerCyclePO getNewestCycle(@Param("chip") String chip);
 
     @Transactional
     @Query("UPDATE ContainerCyclePO SET endTime = :time WHERE id = :id")

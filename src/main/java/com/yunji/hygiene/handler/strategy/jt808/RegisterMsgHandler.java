@@ -31,19 +31,8 @@ import javax.annotation.Resource;
 @ChannelHandler.Sharable
 public class RegisterMsgHandler extends AbsChannelReadHandler<RegisterMsg> {
 
-    @Resource
-    private DeviceCallService deviceCallService;
-
     @Override
     protected void readData(ChannelHandlerContext ctx, DataPacket msg) {
-        String imei = ChannelManager.getImei(ctx.channel());
-        deviceService.cabinetOnline(imei);
-        if (SystemUtil.redisCache().hasKey(DeviceCacheCode.DEVICE_UPGRADE_TASK + imei)) {
-            UpGradeFileDTO info = DeviceFileCache.getInfo(imei);
-            if (info != null)
-                deviceCallService.command(new UpgradeCommandDTO(TransStrategyEnum.DEVICE_GRADE.name(), -1, imei
-                        , info.getFileId(), info.getInfoId()));
-        }
         //默认注册成功
         RegisterResp resp = RegisterResp.success(msg, getSerialNumber(ctx.channel()));
         log.info("RegisterMsgHandler readData,imei:{} ", msg.getHeader().getImei());
