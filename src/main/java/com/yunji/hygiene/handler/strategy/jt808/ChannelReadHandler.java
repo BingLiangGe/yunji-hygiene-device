@@ -62,7 +62,7 @@ public class ChannelReadHandler extends SimpleChannelInboundHandler<DataPacket> 
             Channel channel = ctx.channel();
             String imei = ChannelManager.getImei(channel);
             log.debug("BaseChannelReadHandler channelInactive：{}", ChannelManager.getImei(channel));
-            deviceService.cabinetOffline(imei, true);
+            deviceService.cabinetOffline(imei, false);
             super.channelInactive(ctx);
         }
     }

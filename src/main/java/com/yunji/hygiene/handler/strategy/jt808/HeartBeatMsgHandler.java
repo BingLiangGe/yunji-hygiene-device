@@ -26,7 +26,7 @@ public class HeartBeatMsgHandler extends AbsChannelReadHandler<HeartBeatMsg> {
         String imei = msg.getHeader().getImei();
         CommonResp resp = CommonResp.success(msg, getSerialNumber(ctx.channel()));
         log.debug("HeartBeatMsgHandler readData,imei:{} ", imei);
-        deviceService.cabinetOnline(imei, false);
+        //deviceService.cabinetOnline(imei, false);
         write(ctx, resp);
     }
 }
