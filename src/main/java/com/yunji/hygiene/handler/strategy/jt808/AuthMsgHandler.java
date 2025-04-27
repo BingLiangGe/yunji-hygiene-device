@@ -42,7 +42,7 @@ public class AuthMsgHandler extends AbsChannelReadHandler<AuthMsg> {
                 deviceCallService.command(new UpgradeCommandDTO(TransStrategyEnum.DEVICE_GRADE.name(), -1, imei
                         , info.getFileId(), info.getInfoId()));
         }
-        deviceService.cabinetOnline(imei);
+        deviceService.cabinetOnline(imei, true);
         ChannelManager.add(imei, ctx.channel());
         CommonResp resp = CommonResp.success(msg, getSerialNumber(ctx.channel()));
         log.info("AuthMsgHandler readData,imei:{} ", imei);

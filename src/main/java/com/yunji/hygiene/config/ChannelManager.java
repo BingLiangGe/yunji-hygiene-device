@@ -36,7 +36,7 @@ public class ChannelManager {
 
     //public static final AttributeKey<UpGradeFileData> FILE_DATA_KEY = AttributeKey.valueOf("fileData");
 
-    private static final ChannelFutureListener remover = future -> {
+    public static final ChannelFutureListener remover = future -> {
         try {
 //            String imei = future.channel().attr(TERMINAL_IMEI).get();
 //            DeviceChannel deviceChannel = channelIdMap.get(imei);

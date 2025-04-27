@@ -60,16 +60,18 @@ public class DeviceService {
         return containerRep.findByChipImeiAndDelFlag(chip, 0);
     }
 
-    public void cabinetOnline(String imei) {
+    public void cabinetOnline(String imei, boolean cycle) {
         int i = containerRep.cabinetOnline(imei, new Date());
         log.info("DeviceService cabinet online rs:{} imei:{}", i, imei);
-        handleCycle(imei, OnlineStatus.ONLINE.getCode());
+        if (cycle)
+            handleCycle(imei, OnlineStatus.ONLINE.getCode());
     }
 
-    public void cabinetOffline(String imei) {
+    public void cabinetOffline(String imei, boolean cycle) {
         int i = containerRep.cabinetOffline(imei, new Date());
         log.info("DeviceService cabinet offline rs:{} imei:{}", i, imei);
-        handleCycle(imei, OnlineStatus.OFFLINE.getCode());
+        if (cycle)
+            handleCycle(imei, OnlineStatus.OFFLINE.getCode());
     }
 
     public void handleCycle(String imei, Integer status) {
@@ -201,6 +203,6 @@ public class DeviceService {
     }
 
     public void updateHygieneCabinet(Long id, Integer rssi, Integer lockStatus) {
-        containerRep.updateHygieneCabinet(id,rssi,lockStatus);
+        containerRep.updateHygieneCabinet(id, rssi, lockStatus);
     }
 }

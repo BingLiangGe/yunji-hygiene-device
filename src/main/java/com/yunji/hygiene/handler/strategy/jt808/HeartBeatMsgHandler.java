@@ -22,11 +22,11 @@ import org.springframework.stereotype.Component;
 public class HeartBeatMsgHandler extends AbsChannelReadHandler<HeartBeatMsg> {
 
     @Override
-    protected void readData(ChannelHandlerContext ctx, DataPacket msg)  {
+    protected void readData(ChannelHandlerContext ctx, DataPacket msg) {
         String imei = msg.getHeader().getImei();
         CommonResp resp = CommonResp.success(msg, getSerialNumber(ctx.channel()));
         log.debug("HeartBeatMsgHandler readData,imei:{} ", imei);
-        deviceService.cabinetOnline(imei);
+        deviceService.cabinetOnline(imei, false);
         write(ctx, resp);
     }
 }
