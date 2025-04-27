@@ -60,6 +60,10 @@ public class DeviceService {
         return containerRep.findByChipImeiAndDelFlag(chip, 0);
     }
 
+    public void updateStatus(String imei, boolean online) {
+        containerRep.updateStatus(imei, online ? OnlineStatus.ONLINE.getCode() : OnlineStatus.OFFLINE.getCode());
+    }
+
     public void cabinetOnline(String imei, boolean cycle) {
         int i = containerRep.cabinetOnline(imei, new Date());
         log.info("DeviceService cabinet online rs:{} imei:{}", i, imei);
@@ -207,6 +211,6 @@ public class DeviceService {
     }
 
     public void updateCabinetRuntime(Long id, Integer runtimeStatus, String runtimeError) {
-        containerRep.updateCabinetRuntime(id,runtimeStatus,runtimeError);
+        containerRep.updateCabinetRuntime(id, runtimeStatus, runtimeError);
     }
 }

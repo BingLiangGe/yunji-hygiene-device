@@ -29,6 +29,11 @@ public interface IContainerRepository extends JpaRepository<ContainerPO, Long> {
 
     @Modifying
     @Transactional
+    @Query("update ContainerPO set onlineStatus=:status where chipImei=:chip and delFlag = 0")
+    int updateStatus(@Param("chip") String chip, @Param("status") Integer status);
+
+    @Modifying
+    @Transactional
     @Query("update ContainerPO set offlineTime = :time,onlineStatus=0 where chipImei = :chip and delFlag = 0")
     int cabinetOffline(@Param("chip") String chip, @Param("time") Date time);
 
