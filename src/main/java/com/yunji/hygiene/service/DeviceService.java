@@ -92,6 +92,7 @@ public class DeviceService {
                 log.debug("DeviceService cabinet modifyNewestCycle {}", JsonUtil.toJsonString(newestCycle));
                 if (!status.equals(newestCycle.getCycleType())) {
                     cycleRep.modifyNewestCycle(date, newestCycle.getId());
+                    cycleRep.save(cycle);
                 }
             } else {
                 log.debug("DeviceService cabinet save cycle {}", JsonUtil.toJsonString(cycle));
