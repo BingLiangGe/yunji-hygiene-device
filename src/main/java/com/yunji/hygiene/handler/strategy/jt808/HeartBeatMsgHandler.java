@@ -20,10 +20,13 @@ import org.springframework.stereotype.Component;
 @Component(HandleConstant.HEART_SERVICE)
 @ChannelHandler.Sharable
 public class HeartBeatMsgHandler extends AbsChannelReadHandler<HeartBeatMsg> {
+
     @Override
     protected void readData(ChannelHandlerContext ctx, DataPacket msg)  {
+        String imei = msg.getHeader().getImei();
         CommonResp resp = CommonResp.success(msg, getSerialNumber(ctx.channel()));
-        log.debug("HeartBeatMsgHandler readData,imei:{} ", msg.getHeader().getImei());
+        log.debug("HeartBeatMsgHandler readData,imei:{} ", imei);
+        deviceService.cabinetOnline(imei);
         write(ctx, resp);
     }
 }

@@ -60,9 +60,11 @@ public class ChannelReadHandler extends SimpleChannelInboundHandler<DataPacket> 
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         if (ctx.pipeline().last() == this) {
             Channel channel = ctx.channel();
+            String imei = ChannelManager.getImei(channel);
             log.debug("BaseChannelReadHandler channelInactive：{}", ChannelManager.getImei(channel));
             super.channelInactive(ctx);
             ctx.close();
+            deviceService.cabinetOffline(imei);
         }
     }
 
