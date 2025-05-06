@@ -1,5 +1,6 @@
 package com.yunji.hygiene.repository;
 
+import com.yunji.hygiene.entity.po.ContainerCellPO;
 import com.yunji.hygiene.entity.po.ContainerCyclePO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -12,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @date : 2025/1/23 11:16
  * @description : TODO
  **/
-public interface IContainerCellRepository extends JpaRepository<ContainerCyclePO, Long> {
+public interface IContainerCellRepository extends JpaRepository<ContainerCellPO, Long> {
 
     @Transactional
     @Modifying

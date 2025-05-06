@@ -100,8 +100,8 @@ public class DataPacket {
 
     public String readAsciiByBytes(int len) {
         byte[] bytes = new byte[len];
-        System.out.println("readAsciiByBytes len:" + len);
-        System.out.println("readerIndex:" + this.payload.readerIndex());
+        //System.out.println("readAsciiByBytes len:" + len);
+        //System.out.println("readerIndex:" + this.payload.readerIndex());
         this.payload.readBytes(bytes);
         return AsciiUtil.toStr(bytes);
     }

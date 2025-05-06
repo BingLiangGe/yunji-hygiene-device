@@ -2,6 +2,7 @@ package com.yunji.hygiene.entity.po;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -12,6 +13,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
+@DynamicUpdate
 @Table(name = "t_container")
 public class ContainerPO {
     @Id

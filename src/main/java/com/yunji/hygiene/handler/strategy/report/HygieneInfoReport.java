@@ -1,5 +1,7 @@
 package com.yunji.hygiene.handler.strategy.report;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import com.yunji.hygiene.entity.domain.resp.jt808.CommonResp;
 import com.yunji.hygiene.entity.domain.resp.report.HygieneInfoReportResp;
 import com.yunji.hygiene.entity.domain.resp.report.ReportMsg;
@@ -26,16 +28,20 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class HygieneInfoReport extends AbsTranReportMsg{
+public class HygieneInfoReport extends AbsTranReportMsg {
 
     private static final long EVENT_DIFF_TIME = 10 * 60 * 1000;
     private static final int SLEEP_HOURS = 2000;
+
+    private static final String STATUS_NORMAL = "正常";
+    private static final String STATUS_ABNORMAL = "异常";
+
     @Override
     public TransReportDTO handleReport(ChannelHandlerContext ctx, ReportMsg msg) {
         HygieneInfoReportResp sysInfo = (HygieneInfoReportResp) msg;
         String imei = msg.getHeader().getImei();
         log.info("HygieneInfoReport channelRead0 msg:{}", JsonUtil.toJsonString(msg));
-        HygieneInfoDTO devInfo = DeviceConvert.convert(sysInfo,deviceService);
+        HygieneInfoDTO devInfo = DeviceConvert.convert(sysInfo, deviceService);
         if (devInfo.getEventId() != null && devInfo.getEventId() > 0) {
             Date updateTime = deviceService.getUpdateTime(devInfo.getEventId());
             updateTime = updateTime == null ? new Date() : updateTime;
@@ -51,43 +57,42 @@ public class HygieneInfoReport extends AbsTranReportMsg{
         }
         List<HygieneDetailInfoDTO> infoList = devInfo.getInfoList();
         List<ContainerCellPO> updateCellList = new ArrayList<>();
-        Integer runtimeStatus = 1;
-        StringBuilder errorMsg = new StringBuilder();
+        int runtimeStatus = 1;
+        List<String> errorMsg = Lists.newArrayList();
         for (HygieneDetailInfoDTO infoDTO : infoList) {
-            String infraredMessage = "正常";
-            String motorMessage = "正常";
-            if (infoDTO.getDistance().equals(-1)){
-                infraredMessage = "异常";
-                runtimeStatus = 0;
-            }
-            if (infoDTO.getMotorStatus().equals(0)){
-                motorMessage = "异常";
-                runtimeStatus = 0;
-            }
-            String format = MessageFormat.format(DeviceErrorEnum.CHECKED_202513.getMessage(), infoDTO.getOrdinal(), infraredMessage, motorMessage);
-            errorMsg.append(format);
+            Integer distance = infoDTO.getDistance();
+            Integer motorStatus = infoDTO.getMotorStatus();
+            boolean isInfraredNormal = !distance.equals(-1);
+            boolean isMotorNormal = motorStatus.equals(1);
+            String infraredMessage = isInfraredNormal ? STATUS_NORMAL : STATUS_ABNORMAL;
+            String motorMessage = isMotorNormal ? STATUS_NORMAL : STATUS_ABNORMAL;
+            runtimeStatus = (!isInfraredNormal || !isMotorNormal) ? 0 : 1;
+            if (runtimeStatus == 1)
+                errorMsg.add(MessageFormat.format(DeviceErrorEnum.CHECKED_202513.getMessage(), infoDTO.getOrdinal(), infraredMessage, motorMessage));
             ContainerCellPO cellPO = new ContainerCellPO();
             cellPO.setOrdinal(infoDTO.getOrdinal());
-            cellPO.setDistance(infoDTO.getDistance());
-            cellPO.setInfraredStatus(infoDTO.getDistance().equals(-1) ? 1 : 0);
+            cellPO.setDistance(distance);
+            cellPO.setInfraredStatus(isInfraredNormal ? 0 : 1);
             updateCellList.add(cellPO);
         }
         // 数据结果更新到缓存
         DeviceInfoCache.createInfo(devInfo);
-
         ContainerPO containerPO = deviceService.findByChipImei(imei);
         if (containerPO != null) {
-            deviceService.updateHygieneCabinet(containerPO.getId(), (int)sysInfo.getRssi(),(int) sysInfo.getLockStatus());
-            if (runtimeStatus == 1){
-                errorMsg = new StringBuilder();
-            }
-            deviceService.updateCabinetRuntime(containerPO.getId(),runtimeStatus,errorMsg.toString());
-            for (ContainerCellPO cellPO : updateCellList) {
-                deviceService.updateCabinetCell(cellPO.getOrdinal(),containerPO.getId(),cellPO.getDistance());
-            }
+            containerPO.setRssi((int) sysInfo.getRssi());
+            containerPO.setLockStatus((int) sysInfo.getLockStatus());
+            containerPO.setRuntimeStatus(runtimeStatus);
+            containerPO.setRuntimeError(Joiner.on(',').join(errorMsg));
+            deviceService.updateCabinet(containerPO);
+            // deviceService.updateCabinet(containerPO.getId(), (int) sysInfo.getRssi(), (int) sysInfo.getLockStatus());
+            //  deviceService.updateCabinetRuntime(containerPO.getId(), runtimeStatus, errorMsg.toString());
+//            for (ContainerCellPO cellPO : updateCellList) {
+//                deviceService.batchUpdateCell(cellPO.getOrdinal(), containerPO.getId(), cellPO.getDistance());
+//            }
+            deviceService.batchUpdateCell(updateCellList);
         }
         CommonResp resp = CommonResp.success(msg, AbsChannelReadHandler.getSerialNumber(ctx.channel()));
-        log.info("HygieneInfoReport channelRead0 msg:{}", msg);
+        log.info("HygieneInfoReport resp:{} devInfo:{}", resp.getResult(), JsonUtil.toJsonString(devInfo));
         return new TransReportDTO(true, true, resp);
     }
 

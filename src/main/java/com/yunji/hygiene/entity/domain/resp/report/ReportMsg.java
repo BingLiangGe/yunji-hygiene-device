@@ -18,7 +18,6 @@ import lombok.ToString;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@ToString(callSuper = true)
 public class ReportMsg extends DataPacket {
 
     private byte messageType; // 透传消息类型 1字节
@@ -35,5 +34,16 @@ public class ReportMsg extends DataPacket {
         this.setMessageType(bb.readByte());
         this.setMessageLength(bb.readInt());
         this.setPackageLength(bb.readShort());
+    }
+
+    @Override
+    public String toString() {
+        return "ReportMsg{" +
+                "messageLength=" + messageLength +
+                ", messageType=" + messageType +
+                ", packageLength=" + packageLength +
+                ", header=" + header +
+                ", payload=" + payload +
+                '}';
     }
 }

@@ -2,6 +2,7 @@ package com.yunji.hygiene.entity.po;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -13,6 +14,7 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "t_container_cell")
+@DynamicUpdate
 public class ContainerCellPO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

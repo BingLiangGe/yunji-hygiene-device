@@ -8,6 +8,7 @@ import com.yunji.hygiene.constant.DeviceLockCode;
 import com.yunji.hygiene.entity.dto.UpGradeFileDTO;
 import com.yunji.hygiene.entity.dto.UpgradeCommandDTO;
 import com.yunji.hygiene.entity.enums.OnlineStatus;
+import com.yunji.hygiene.entity.po.ContainerCellPO;
 import com.yunji.hygiene.entity.po.ContainerCyclePO;
 import com.yunji.hygiene.entity.po.ContainerPO;
 import com.yunji.hygiene.entity.po.UpgradeFilePO;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -33,8 +35,6 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Service
 public class DeviceService {
-    private final Logger logs = LoggerFactory.getLogger(this.getClass());
-
     @Resource
     private IContainerRepository containerRep;
     @Resource
@@ -111,14 +111,20 @@ public class DeviceService {
 //        }
     }
 
+//    @Transactional
+//    public void updateCabinet(Long containerId, Integer battleLevel, Integer sleepStatus, Integer rssi, Integer inLimitStatus, Integer outLimitStatus, Integer lockStatus) {
+//        containerRep.updateCabinet(containerId, battleLevel, sleepStatus, rssi, inLimitStatus, outLimitStatus, lockStatus);
+//    }
+
     @Transactional
-    public void updateCabinet(Long containerId, Integer battleLevel, Integer sleepStatus, Integer rssi, Integer inLimitStatus, Integer outLimitStatus, Integer lockStatus) {
-        containerRep.updateCabinet(containerId, battleLevel, sleepStatus, rssi, inLimitStatus, outLimitStatus, lockStatus);
+    public void updateCabinet(ContainerPO container) {
+        containerRep.save(container);
     }
 
     @Transactional
-    public void updateCabinetCell(Integer ordinal, Long containerId, Integer distance) {
-        cellRepo.cabinetCell(ordinal, containerId, distance);
+    public void batchUpdateCell(List<ContainerCellPO> cells) {
+        //cellRepo.cabinetCell(ordinal, containerId, distance);
+        cellRepo.saveAll(cells);
     }
 
 //    public String selectVersion(String chipImei) {
@@ -181,9 +187,9 @@ public class DeviceService {
     }
 
 
-    public void updateBattle(Long id, int battleStatus, Date updateBattleTime) {
-        containerRep.updateBattle(id, battleStatus, updateBattleTime);
-    }
+//    public void updateBattle(Long id, int battleStatus, Date updateBattleTime) {
+//        containerRep.updateBattle(id, battleStatus, updateBattleTime);
+//    }
 
     public boolean createUpgradeCache(UpgradeCommandDTO cmd) {
         UpgradeFilePO file = getFile(cmd.getFileId());
@@ -206,11 +212,7 @@ public class DeviceService {
         return typeRepository.getTypeHeight(typeCode);
     }
 
-    public void updateHygieneCabinet(Long id, Integer rssi, Integer lockStatus) {
-        containerRep.updateHygieneCabinet(id, rssi, lockStatus);
-    }
-
-    public void updateCabinetRuntime(Long id, Integer runtimeStatus, String runtimeError) {
-        containerRep.updateCabinetRuntime(id, runtimeStatus, runtimeError);
-    }
+//    public void updateHygieneCabinet(Long id, Integer rssi, Integer lockStatus) {
+//        //containerRep.updateHygieneCabinet(id, rssi, lockStatus);
+//    }
 }
