@@ -18,6 +18,7 @@ import com.yunji.hygiene.util.LockUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -125,6 +126,11 @@ public class DeviceService {
     public void batchUpdateCell(List<ContainerCellPO> cells) {
         //cellRepo.cabinetCell(ordinal, containerId, distance);
         cellRepo.saveAll(cells);
+    }
+
+    @Transactional
+    public void updateCell(Integer ordinal,   Long containerId,  Integer distance) {
+        cellRepo.cabinetCell(ordinal, containerId, distance);
     }
 
 //    public String selectVersion(String chipImei) {

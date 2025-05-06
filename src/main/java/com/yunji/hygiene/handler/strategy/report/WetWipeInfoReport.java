@@ -1,13 +1,11 @@
 package com.yunji.hygiene.handler.strategy.report;
 
-import com.google.common.collect.Lists;
 import com.yunji.hygiene.constant.DeviceCacheCode;
 import com.yunji.hygiene.entity.domain.resp.jt808.CommonResp;
 import com.yunji.hygiene.entity.domain.resp.report.ReportMsg;
 import com.yunji.hygiene.entity.domain.resp.report.WetWipeInfoReportResp;
 import com.yunji.hygiene.entity.dto.TransReportDTO;
 import com.yunji.hygiene.entity.dto.WipeDeviceInfoDTO;
-import com.yunji.hygiene.entity.po.ContainerCellPO;
 import com.yunji.hygiene.entity.po.ContainerPO;
 import com.yunji.hygiene.handler.convert.DeviceConvert;
 import com.yunji.hygiene.handler.strategy.jt808.AbsChannelReadHandler;
@@ -83,11 +81,12 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
             containerPO.setOutLimitStatus(devInfo.getOutLimitStatus());
             deviceService.updateCabinet(containerPO);
             // 更新状态到格子表
-            ContainerCellPO cellPO = new ContainerCellPO();
-            cellPO.setOrdinal(1);
-            cellPO.setContainerId(containerPO.getId());
-            cellPO.setDistance(devInfo.getDistance());
-            deviceService.batchUpdateCell(Lists.newArrayList(cellPO));
+//            ContainerCellPO cellPO = new ContainerCellPO();
+//            cellPO.setOrdinal(1);
+//            cellPO.setContainerId(containerPO.getId());
+//            cellPO.setDistance(devInfo.getDistance());
+            //deviceService.batchUpdateCell(Lists.newArrayList(cellPO));
+            deviceService.updateCell(1, containerPO.getId(), devInfo.getDistance());
             // 更新状态到售卖柜表
 //            deviceService.updateCabinet(containerPO.getId(), devInfo.getBattleLevel(), devInfo.getSleepStatus()
 //                    , devInfo.getRssi(), devInfo.getInLimitStatus(), devInfo.getOutLimitStatus(), devInfo.getLockStatus());

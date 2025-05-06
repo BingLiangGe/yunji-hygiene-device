@@ -40,21 +40,20 @@ public class DeviceConvert {
         devInfo.setEventId((long) msg.getEventId());
         devInfo.setImei(msg.getHeader().getImei());
         devInfo.setSleepStatus(0);
-        devInfo.setLockStatus((int)msg.getLockStatus());
+        devInfo.setLockStatus((int) msg.getLockStatus());
         devInfo.setBattleLevel(0);
         devInfo.setRssi((int) msg.getRssi());
         BigDecimal typeHeight = deviceService.getTypeHeight(ContainerTypeEnum.HYGIENE.getTypeCode());
-        Integer ordinal = 0;
         List<HygieneDetailInfoDTO> list = new ArrayList<>();
-        ordinal = 0;
+        int ordinal = 0;
         for (Short distance : msg.getDistanceList()) {
-            ordinal ++;
-            Integer tissueStatus = 0;
+            ordinal++;
+            int tissueStatus = 0;
             // FIXME 偏差值
-            if (BigDecimal.valueOf(distance.intValue()).subtract(typeHeight).abs().compareTo(BigDecimal.ONE) > 0)  {
-                tissueStatus =1;
+            if (BigDecimal.valueOf(distance.intValue()).subtract(typeHeight).abs().compareTo(BigDecimal.ONE) > 0) {
+                tissueStatus = 1;
             }
-            list.add(new HygieneDetailInfoDTO(ordinal, distance.intValue(), tissueStatus,(int) msg.getMotorStatusList().get(ordinal-1)));
+            list.add(new HygieneDetailInfoDTO(ordinal, distance.intValue(), tissueStatus, (int) msg.getMotorStatusList().get(ordinal - 1)));
         }
         devInfo.setInfoList(list);
         devInfo.setLastTime(new Date());
