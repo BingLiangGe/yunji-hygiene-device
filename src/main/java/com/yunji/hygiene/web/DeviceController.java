@@ -77,6 +77,8 @@ public class DeviceController {
     public boolean status(@PathVariable String imei) {
         boolean online = ChannelManager.online(imei);
         log.info("hygiene device online status imei:{},online:{}", imei, online);
+        if (!online)
+            deviceService.updateStatus(imei, false);
         if (online) {
             boolean ack = deviceCallService.ping(imei, true);
             log.info("hygiene device ping ack imei:{},online:{}", imei, ack);
