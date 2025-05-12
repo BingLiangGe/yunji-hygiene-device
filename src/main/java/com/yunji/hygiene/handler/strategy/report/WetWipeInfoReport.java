@@ -79,6 +79,7 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
             containerPO.setLockStatus(devInfo.getLockStatus());
             containerPO.setInLimitStatus(devInfo.getInLimitStatus());
             containerPO.setOutLimitStatus(devInfo.getOutLimitStatus());
+            containerPO.setRssi(devInfo.getRssi());
             deviceService.updateCabinet(containerPO);
             // 更新状态到格子表
 //            ContainerCellPO cellPO = new ContainerCellPO();

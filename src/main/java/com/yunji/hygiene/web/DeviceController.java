@@ -85,6 +85,18 @@ public class DeviceController {
         return false;
     }
 
+    @GetMapping(value = "/online/{imei}")
+    public boolean online(@PathVariable String imei) {
+        deviceService.cabinetOnline(imei, true);
+        return true;
+    }
+
+    @GetMapping(value = "/offline/{imei}")
+    public boolean offline(@PathVariable String imei) {
+        deviceService.cabinetOffline(imei, true);
+        return true;
+    }
+
     @GetMapping(value = "/statusList")
     public Map<String, Channel> statusList() {
         return ChannelManager.getChannelMap();
