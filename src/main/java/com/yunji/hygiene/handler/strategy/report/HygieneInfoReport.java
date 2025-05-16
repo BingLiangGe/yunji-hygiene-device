@@ -67,7 +67,7 @@ public class HygieneInfoReport extends AbsTranReportMsg {
             String infraredMessage = isInfraredNormal ? STATUS_NORMAL : STATUS_ABNORMAL;
             String motorMessage = isMotorNormal ? STATUS_NORMAL : STATUS_ABNORMAL;
             runtimeStatus = (!isInfraredNormal || !isMotorNormal) ? 0 : 1;
-            if (runtimeStatus == 1)
+            if (runtimeStatus == 0)
                 errorMsg.add(MessageFormat.format(DeviceErrorEnum.CHECKED_202513.getMessage(), infoDTO.getOrdinal(), infraredMessage, motorMessage));
             ContainerCellPO cellPO = new ContainerCellPO();
             cellPO.setOrdinal(infoDTO.getOrdinal());
