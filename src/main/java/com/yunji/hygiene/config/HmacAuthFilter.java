@@ -1,22 +1,19 @@
 package com.yunji.hygiene.config;
 
 import com.yunji.hygiene.util.DeviceSignatureUtil;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 import javax.annotation.Nonnull;
 import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.stream.Collectors;
 
 /**
  * @author : peter-zhu
@@ -65,8 +62,10 @@ public class HmacAuthFilter extends OncePerRequestFilter {
             response.sendError(HttpStatus.UNAUTHORIZED.value(), "Request expired");
             return;
         }
-        String body = new BufferedReader(new InputStreamReader(request.getInputStream()))
-                .lines().collect(Collectors.joining());
+        ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request);
+//        String body = new BufferedReader(new InputStreamReader(request.getInputStream()))
+//                .lines().collect(Collectors.joining());
+        String body = new String(wrappedRequest.getContentAsByteArray(), request.getCharacterEncoding());
         String expected = DeviceSignatureUtil.generateSignature(ts, nonce, body, SECRET);
         if (!expected.equals(signature)) {
             response.sendError(HttpStatus.UNAUTHORIZED.value(), "Invalid signature");
