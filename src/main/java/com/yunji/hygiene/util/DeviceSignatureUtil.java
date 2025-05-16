@@ -15,7 +15,7 @@ public class DeviceSignatureUtil {
     public static final String HMAC_SHA256 = "HmacSHA256";
 
     public static String generateSignature(Long timestamp, String nonce, String body, String secret) throws Exception {
-        String contentToSign = timestamp + "\n" + nonce + "\n" + body;
+        String contentToSign = timestamp + nonce + body;
         Mac mac = Mac.getInstance(HMAC_SHA256);
         mac.init(new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), HMAC_SHA256));
         byte[] hash = mac.doFinal(contentToSign.getBytes(StandardCharsets.UTF_8));
