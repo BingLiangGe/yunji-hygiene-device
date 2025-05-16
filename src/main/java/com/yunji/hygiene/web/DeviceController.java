@@ -1,6 +1,7 @@
 package com.yunji.hygiene.web;
 
 import com.yunji.hygiene.config.ChannelManager;
+import com.yunji.hygiene.config.HMACAuth;
 import com.yunji.hygiene.entity.dto.EnterCommandDTO;
 import com.yunji.hygiene.entity.dto.UpgradeCommandDTO;
 import com.yunji.hygiene.entity.po.UpgradeFilePO;
@@ -34,13 +35,13 @@ public class DeviceController {
     @Resource
     private DeviceService deviceService;
 
+    @HMACAuth
     @GetMapping(value = "/test")
     public Response<?> test() {
-        UpgradeFilePO file = deviceService.getFile(11L);
-        System.out.println(file);
         return ResponseHelper.success();
     }
 
+    @HMACAuth
     @PostMapping(value = "/command")
     public Response<String> command(@RequestBody @Valid EnterCommandDTO cmd) {
 //        boolean ping = deviceCallService.ping(cmd.getImei(), false);
@@ -52,6 +53,7 @@ public class DeviceController {
         return ResponseHelper.failure("指令下达失败:" + cmd.getImei());
     }
 
+    @HMACAuth
     @PostMapping(value = "/upgrade")
     public Response<String> upgrade(@RequestBody @Valid UpgradeCommandDTO cmd) {
         log.debug("DeviceController upgrade :{}", JsonUtil.toJsonString(cmd));
@@ -87,18 +89,21 @@ public class DeviceController {
         return false;
     }
 
+    @HMACAuth
     @GetMapping(value = "/online/{imei}")
     public boolean online(@PathVariable String imei) {
         deviceService.cabinetOnline(imei, true);
         return true;
     }
 
+    @HMACAuth
     @GetMapping(value = "/offline/{imei}")
     public boolean offline(@PathVariable String imei) {
         deviceService.cabinetOffline(imei, true);
         return true;
     }
 
+    @HMACAuth
     @GetMapping(value = "/statusList")
     public Map<String, Channel> statusList() {
         return ChannelManager.getChannelMap();

@@ -10,7 +10,7 @@ import java.util.Base64;
  * @date : 2025/5/15 18:27
  * @description : TODO
  **/
-public class SignatureUtil {
+public class DeviceSignatureUtil {
 
     public static final String HMAC_SHA256 = "HmacSHA256";
 
