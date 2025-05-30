@@ -14,6 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 public interface IProductRepository extends JpaRepository<ProductPO, Long> {
 
     @Transactional
-    @Query("select id,sku,productHeight,productName from ProductPO where id = :productId")
+    @Query(" from ProductPO where id = :productId")
     ProductPO getProduct(@Param("productId") Long productId);
 }

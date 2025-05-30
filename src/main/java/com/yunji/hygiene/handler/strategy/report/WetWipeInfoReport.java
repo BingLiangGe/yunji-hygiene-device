@@ -66,8 +66,6 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
             SystemUtil.redisCache.delete(DeviceCacheCode.DEVICE_SLEEP + imei);
             log.info("WetWipeInfoReport wakeup imei {}", imei);
         }
-        // 数据结果更新到缓存
-        DeviceInfoCache.createInfo(devInfo);
         ContainerPO containerPO = deviceService.findByChipImei(imei);
         if (containerPO != null) {
             Integer battleStatus = containerPO.getBattleStatus();
@@ -99,6 +97,8 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
             deviceService.updateEvent(devInfo.getEventId(), JsonUtil.toJsonString(devInfo));
         if (eventFinish)
             deviceService.eventFinish(devInfo.getEventId());
+        // 数据结果更新到缓存
+        DeviceInfoCache.createInfo(devInfo);
         CommonResp resp = CommonResp.success(msg, AbsChannelReadHandler.getSerialNumber(ctx.channel()));
         log.info("WetWipeInfoReport resp success:{} devInfo:{}", resp.getResult(), JsonUtil.toJsonString(devInfo));
         return new TransReportDTO(true, true, resp);
