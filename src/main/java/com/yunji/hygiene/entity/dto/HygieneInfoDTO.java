@@ -1,14 +1,10 @@
 package com.yunji.hygiene.entity.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import java.io.Serializable;
-import java.util.List;
-
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class HygieneInfoDTO extends DeviceInfoDTO implements Serializable {
+public class HygieneInfoDTO extends DeviceInfoDTO {
     private static final long serialVersionUID = 1L;
-
-    private List<HygieneDetailInfoDTO> infoList;
-
 }

@@ -1,12 +1,12 @@
 package com.yunji.hygiene.handler.convert;
 
+import com.yunji.hygiene.constant.DeviceConstant;
 import com.yunji.hygiene.entity.domain.resp.report.HygieneInfoReportResp;
 import com.yunji.hygiene.entity.domain.resp.report.WetWipeInfoReportResp;
-import com.yunji.hygiene.entity.dto.HygieneDetailInfoDTO;
+import com.yunji.hygiene.entity.dto.DeviceCellDetailDTO;
+import com.yunji.hygiene.entity.dto.DeviceDetailInfoDTO;
 import com.yunji.hygiene.entity.dto.HygieneInfoDTO;
 import com.yunji.hygiene.entity.dto.WipeDeviceInfoDTO;
-import com.yunji.hygiene.entity.enums.ContainerTypeEnum;
-import com.yunji.hygiene.service.DeviceService;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class DeviceConvert {
         return devInfo;
     }
 
-    public static HygieneInfoDTO convert(HygieneInfoReportResp msg, DeviceService deviceService) {
+    public static HygieneInfoDTO convert(HygieneInfoReportResp msg, BigDecimal typeHeight) {
         HygieneInfoDTO devInfo = new HygieneInfoDTO();
         devInfo.setEventId((long) msg.getEventId());
         devInfo.setImei(msg.getHeader().getImei());
@@ -43,20 +43,31 @@ public class DeviceConvert {
         devInfo.setLockStatus((int) msg.getLockStatus());
         devInfo.setBattleLevel(0);
         devInfo.setRssi((int) msg.getRssi());
-        BigDecimal typeHeight = deviceService.getTypeHeight(ContainerTypeEnum.HYGIENE.getTypeCode());
-        List<HygieneDetailInfoDTO> list = new ArrayList<>();
+        List<DeviceDetailInfoDTO> list = new ArrayList<>();
         int ordinal = 0;
         for (Short distance : msg.getDistanceList()) {
             ordinal++;
-            int tissueStatus = 0;
-            // FIXME 偏差值
-            if (BigDecimal.valueOf(distance.intValue()).subtract(typeHeight).abs().compareTo(BigDecimal.ONE) > 0) {
-                tissueStatus = 1;
-            }
-            list.add(new HygieneDetailInfoDTO(ordinal, distance.intValue(), tissueStatus, (int) msg.getMotorStatusList().get(ordinal - 1)));
+            int tissueStatus = BigDecimal.valueOf(distance.intValue()).subtract(typeHeight).abs()
+                    .compareTo(DeviceConstant.PRODUCT_DIFFER_VALUE) > 0 ? 1 : 0;
+            list.add(new DeviceDetailInfoDTO(ordinal, distance.intValue(), tissueStatus, (int) msg.getMotorStatusList().get(ordinal - 1),
+                    null, null, null, null));
         }
         devInfo.setInfoList(list);
         devInfo.setLastTime(new Date());
         return devInfo;
+    }
+
+    public static void setCellMsg(DeviceDetailInfoDTO detailInfo, DeviceCellDetailDTO eventQuantity) {
+        detailInfo.setProductId(eventQuantity.getProductId());
+        detailInfo.setProductNums(eventQuantity.getProductNums());
+        detailInfo.setProductName(eventQuantity.getProductName());
+        detailInfo.setSku(eventQuantity.getSku());
+    }
+
+    public static void setCellMsg(WipeDeviceInfoDTO deviceInfo, DeviceCellDetailDTO eventQuantity) {
+        deviceInfo.setProductId(eventQuantity.getProductId());
+        deviceInfo.setProductNums(eventQuantity.getProductNums());
+        deviceInfo.setProductName(eventQuantity.getProductName());
+        deviceInfo.setSku(eventQuantity.getSku());
     }
 }

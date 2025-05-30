@@ -8,17 +8,11 @@ import com.yunji.hygiene.constant.DeviceLockCode;
 import com.yunji.hygiene.entity.dto.UpGradeFileDTO;
 import com.yunji.hygiene.entity.dto.UpgradeCommandDTO;
 import com.yunji.hygiene.entity.enums.OnlineStatus;
-import com.yunji.hygiene.entity.po.ContainerCellPO;
-import com.yunji.hygiene.entity.po.ContainerCyclePO;
-import com.yunji.hygiene.entity.po.ContainerPO;
-import com.yunji.hygiene.entity.po.UpgradeFilePO;
+import com.yunji.hygiene.entity.po.*;
 import com.yunji.hygiene.repository.*;
 import com.yunji.hygiene.util.JsonUtil;
 import com.yunji.hygiene.util.LockUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,6 +46,12 @@ public class DeviceService {
     private IUpgradeTaskRepo upgradeTaskRepo;
     @Resource
     private IUpgradeInfoRepo upgradeInfoRepo;
+    @Resource
+    private IProductRepository productRepo;
+
+    public ProductPO getProduct(Long productId) {
+        return productRepo.getProduct(productId);
+    }
 
 //    public Long findIdByChipImei(String chip) {
 //        return containerRep.findIdByChipImeiAndDelFlag(chip, 0);
@@ -129,8 +129,19 @@ public class DeviceService {
     }
 
     @Transactional
-    public void updateCell(Integer ordinal,   Long containerId,  Integer distance) {
-        cellRepo.cabinetCell(ordinal, containerId, distance);
+    public ContainerCellPO getCell(Long containerId) {
+        return cellRepo.getCell(containerId);
+    }
+
+    @Transactional
+    public List<ContainerCellPO> getCellList(Long containerId) {
+        return cellRepo.getCellList(containerId);
+    }
+
+    @Transactional
+    public void updateCell(ContainerCellPO cell) {
+      ///  cellRepo.updateCell(ordinal, containerId, distance, deviceQuantity);
+        cellRepo.save(cell);
     }
 
 //    public String selectVersion(String chipImei) {

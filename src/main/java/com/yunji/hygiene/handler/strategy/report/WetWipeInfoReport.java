@@ -4,9 +4,14 @@ import com.yunji.hygiene.constant.DeviceCacheCode;
 import com.yunji.hygiene.entity.domain.resp.jt808.CommonResp;
 import com.yunji.hygiene.entity.domain.resp.report.ReportMsg;
 import com.yunji.hygiene.entity.domain.resp.report.WetWipeInfoReportResp;
+import com.yunji.hygiene.entity.dto.DeviceCellDetailDTO;
 import com.yunji.hygiene.entity.dto.TransReportDTO;
 import com.yunji.hygiene.entity.dto.WipeDeviceInfoDTO;
+import com.yunji.hygiene.entity.enums.ContainerTypeEnum;
+import com.yunji.hygiene.entity.po.ContainerCellPO;
 import com.yunji.hygiene.entity.po.ContainerPO;
+import com.yunji.hygiene.entity.po.ProductPO;
+import com.yunji.hygiene.handler.calculate.CabinetCalculate;
 import com.yunji.hygiene.handler.convert.DeviceConvert;
 import com.yunji.hygiene.handler.strategy.jt808.AbsChannelReadHandler;
 import com.yunji.hygiene.service.DeviceInfoCache;
@@ -17,6 +22,7 @@ import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import static java.util.concurrent.TimeUnit.HOURS;
@@ -36,6 +42,7 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
 
     @Override
     public TransReportDTO handleReport(ChannelHandlerContext ctx, ReportMsg msg) {
+        boolean updateEvent = false, eventFinish = false;
         log.info("WetWipeInfoReport channelRead0 msg:{}", JsonUtil.toJsonString(msg));
         String imei = msg.getHeader().getImei();
         WetWipeInfoReportResp sysInfo = (WetWipeInfoReportResp) msg;
@@ -46,11 +53,10 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
             long diffTime = System.currentTimeMillis() - updateTime.getTime();
             if (diffTime < EVENT_DIFF_TIME) {
                 log.debug("WetWipeInfoReport channelRead0 diffTime:{}", diffTime);
-                // 拿到设备状态更新事件
-                deviceService.updateEvent(devInfo.getEventId(), JsonUtil.toJsonString(devInfo));
+                updateEvent = true;
                 // 门全部关上 锁住 认为这个事件指令已经完成
                 if (devInfo.getInLimitStatus() == 1 && devInfo.getLockStatus() == 1)
-                    deviceService.eventFinish(devInfo.getEventId());
+                    eventFinish = true;
             }
         }
         if (devInfo.getSleepStatus() == 1) {
@@ -79,13 +85,22 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
             containerPO.setOutLimitStatus(devInfo.getOutLimitStatus());
             containerPO.setRssi(devInfo.getRssi());
             deviceService.updateCabinet(containerPO);
+            BigDecimal typeHeight = deviceService.getTypeHeight(ContainerTypeEnum.WIPE.getTypeCode());
+            ContainerCellPO cellPO = deviceService.getCell(containerPO.getId());
+            ProductPO product = deviceService.getProduct(cellPO.getProductId());
+            DeviceCellDetailDTO eventQuantity = CabinetCalculate.getEventQuantity(cellPO, cellPO.getDistance(), typeHeight, product.getProductHeight());
+            cellPO.setDeviceQuantity(eventQuantity.getProductNums());
             // 更新状态到格子表
-            deviceService.updateCell(1, containerPO.getId(), devInfo.getDistance());
-            // 更新状态到售卖柜表
-
+            deviceService.updateCell(cellPO);
+            DeviceConvert.setCellMsg(devInfo, eventQuantity);
         }
+        // 拿到设备状态更新事件
+        if (updateEvent)
+            deviceService.updateEvent(devInfo.getEventId(), JsonUtil.toJsonString(devInfo));
+        if (eventFinish)
+            deviceService.eventFinish(devInfo.getEventId());
         CommonResp resp = CommonResp.success(msg, AbsChannelReadHandler.getSerialNumber(ctx.channel()));
-        log.info("WetWipeInfoReport resp:{} devInfo:{}", resp.getResult(), JsonUtil.toJsonString(devInfo));
+        log.info("WetWipeInfoReport resp success:{} devInfo:{}", resp.getResult(), JsonUtil.toJsonString(devInfo));
         return new TransReportDTO(true, true, resp);
     }
 

@@ -1,6 +1,7 @@
 package com.yunji.hygiene.web;
 
 import com.yunji.hygiene.config.ChannelManager;
+import com.yunji.hygiene.config.HMACAuth;
 import com.yunji.hygiene.entity.dto.EnterCommandDTO;
 import com.yunji.hygiene.entity.dto.UpgradeCommandDTO;
 import com.yunji.hygiene.entity.po.UpgradeFilePO;

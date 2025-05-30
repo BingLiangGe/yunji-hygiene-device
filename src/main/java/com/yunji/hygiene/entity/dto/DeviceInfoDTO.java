@@ -4,16 +4,11 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
-/**
- * @author : peter-zhu
- * @date : 2025/1/24 15:24
- * @description : TODO
- **/
 @Data
-public class DeviceInfoDTO implements Serializable {
+public abstract class DeviceInfoDTO implements Serializable {
     private static final long serialVersionUID = 1L;
-
     private String imei;
     private Long eventId;
     private Integer sleepStatus;
@@ -21,4 +16,5 @@ public class DeviceInfoDTO implements Serializable {
     private Integer battleLevel;
     private Integer rssi; //信号强度
     private Date lastTime;
+    private List<DeviceDetailInfoDTO> infoList;
 }

@@ -6,8 +6,6 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.math.BigDecimal;
 import java.time.Instant;
 
 @Getter
@@ -28,11 +26,11 @@ public class ContainerCellPO {
     private Integer ordinal;
 
     @Column(name = "product_id")
-    private Integer productId;
+    private Long productId;
 
-    @Size(max = 32)
-    @Column(name = "product_name", length = 32)
-    private String productName;
+//    @Size(max = 32)
+//    @Column(name = "product_name", length = 32)
+//    private String productName;
 
     @NotNull
     @Column(name = "status", nullable = false)
@@ -54,6 +52,9 @@ public class ContainerCellPO {
     @Column(name = "ceiling_quantity")
     private Integer ceilingQuantity;
 
+    @Column(name = "device_quantity")
+    private Integer deviceQuantity;
+
     @Column(name = "send_status")
     private Integer sendStatus;
 
@@ -63,22 +64,22 @@ public class ContainerCellPO {
     @Column(name = "creator")
     private Long creator;
 
-    @Size(max = 255)
-    @Column(name = "create_name")
-    private String createName;
-
-    @Column(name = "create_time")
-    private Instant createTime;
-
-    @Column(name = "updater")
-    private Long updater;
-
-    @Size(max = 255)
-    @Column(name = "update_name")
-    private String updateName;
-
-    @Column(name = "update_time")
-    private Instant updateTime;
+//    @Size(max = 255)
+//    @Column(name = "create_name")
+//    private String createName;
+//
+//    @Column(name = "create_time")
+//    private Instant createTime;
+//
+//    @Column(name = "updater")
+//    private Long updater;
+//
+//    @Size(max = 255)
+//    @Column(name = "update_name")
+//    private String updateName;
+//
+//    @Column(name = "update_time")
+//    private Instant updateTime;
 
     @Column(name = "distance")
     private Integer distance;
