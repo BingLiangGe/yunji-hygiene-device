@@ -41,7 +41,7 @@ public class JT808Encoder extends MessageToByteEncoder<DataPacket> {
                 ReferenceCountUtil.safeRelease(msg.getPayload());
             }
             bb.writeByte(JT808Util.XorSumBytes(bb));
-            log.debug("encode1 :{},hex:{}\n", ctx.channel().remoteAddress(), ByteBufUtil.hexDump(bb));
+            log.info("encode1 :{},hex:{}\n", ctx.channel().remoteAddress(), ByteBufUtil.hexDump(bb));
             ByteBuf escape = escape(bb);
             out.writeBytes(escape);
             ReferenceCountUtil.safeRelease(escape);

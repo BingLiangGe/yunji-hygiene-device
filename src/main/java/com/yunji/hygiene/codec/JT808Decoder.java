@@ -29,7 +29,7 @@ public class JT808Decoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
-        log.debug("decode ip:{},hex:{}", ctx.channel().remoteAddress(), ByteBufUtil.hexDump(in));
+        log.info("decode ip:{},hex:{}", ctx.channel().remoteAddress(), ByteBufUtil.hexDump(in));
         try {
             DataPacket msg = decode(in);
             if (msg != null) {

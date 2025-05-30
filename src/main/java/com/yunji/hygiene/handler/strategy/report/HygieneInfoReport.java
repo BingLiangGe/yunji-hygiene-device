@@ -84,12 +84,9 @@ public class HygieneInfoReport extends AbsTranReportMsg {
             containerPO.setRuntimeStatus(runtimeStatus);
             containerPO.setRuntimeError(Joiner.on(',').join(errorMsg));
             deviceService.updateCabinet(containerPO);
-            // deviceService.updateCabinet(containerPO.getId(), (int) sysInfo.getRssi(), (int) sysInfo.getLockStatus());
-            //  deviceService.updateCabinetRuntime(containerPO.getId(), runtimeStatus, errorMsg.toString());
             for (ContainerCellPO cellPO : updateCellList) {
                 deviceService.updateCell(cellPO.getOrdinal(), containerPO.getId(), cellPO.getDistance());
             }
-            //deviceService.batchUpdateCell(updateCellList);
         }
         CommonResp resp = CommonResp.success(msg, AbsChannelReadHandler.getSerialNumber(ctx.channel()));
         log.info("HygieneInfoReport resp:{} devInfo:{}", resp.getResult(), JsonUtil.toJsonString(devInfo));

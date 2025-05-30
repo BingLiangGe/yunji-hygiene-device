@@ -68,11 +68,9 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
             if (battleStatus == 1 && devInfo.getBattleLevel() <= 20) {
                 containerPO.setBattleStatus(0);
                 containerPO.setUpdateBattleTime(new Date());
-                //  deviceService.updateBattle(containerPO.getId(), 0, new Date());
             } else if (battleStatus == 0 && devInfo.getBattleLevel() > 20) {
                 containerPO.setBattleStatus(1);
                 containerPO.setUpdateBattleTime(new Date());
-                //  deviceService.updateBattle(containerPO.getId(), 1, new Date());
             }
             containerPO.setBattleLevel(devInfo.getBattleLevel());
             containerPO.setSleepStatus(devInfo.getSleepStatus());
@@ -82,15 +80,9 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
             containerPO.setRssi(devInfo.getRssi());
             deviceService.updateCabinet(containerPO);
             // 更新状态到格子表
-//            ContainerCellPO cellPO = new ContainerCellPO();
-//            cellPO.setOrdinal(1);
-//            cellPO.setContainerId(containerPO.getId());
-//            cellPO.setDistance(devInfo.getDistance());
-            //deviceService.batchUpdateCell(Lists.newArrayList(cellPO));
             deviceService.updateCell(1, containerPO.getId(), devInfo.getDistance());
             // 更新状态到售卖柜表
-//            deviceService.updateCabinet(containerPO.getId(), devInfo.getBattleLevel(), devInfo.getSleepStatus()
-//                    , devInfo.getRssi(), devInfo.getInLimitStatus(), devInfo.getOutLimitStatus(), devInfo.getLockStatus());
+
         }
         CommonResp resp = CommonResp.success(msg, AbsChannelReadHandler.getSerialNumber(ctx.channel()));
         log.info("WetWipeInfoReport resp:{} devInfo:{}", resp.getResult(), JsonUtil.toJsonString(devInfo));

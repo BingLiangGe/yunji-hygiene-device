@@ -99,6 +99,14 @@ public class DeviceController {
         return true;
     }
 
+    @GetMapping(value = "clean/{imei}")
+    public boolean clean(@PathVariable String imei) {
+        Channel channel = ChannelManager.getChannel(imei);
+        assert channel != null;
+        channel.close();
+        return  true;
+    }
+
     @GetMapping(value = "/statusList")
     public Map<String, Channel> statusList() {
         return ChannelManager.getChannelMap();
