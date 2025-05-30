@@ -86,7 +86,7 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
             BigDecimal typeHeight = deviceService.getTypeHeight(ContainerTypeEnum.WIPE.getTypeCode());
             ContainerCellPO cellPO = deviceService.getCell(containerPO.getId());
             ProductPO product = deviceService.getProduct(cellPO.getProductId());
-            DeviceCellDetailDTO eventQuantity = CabinetCalculate.getEventQuantity(cellPO, cellPO.getDistance(), typeHeight, product.getProductHeight());
+            DeviceCellDetailDTO eventQuantity = CabinetCalculate.getEventQuantity(cellPO, devInfo.getDistance(), typeHeight, product.getProductHeight());
             cellPO.setDeviceQuantity(eventQuantity.getProductNums());
             // 更新状态到格子表
             deviceService.updateCell(cellPO);
