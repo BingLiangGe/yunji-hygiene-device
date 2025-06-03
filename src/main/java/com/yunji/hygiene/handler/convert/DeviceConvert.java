@@ -49,7 +49,7 @@ public class DeviceConvert {
             ordinal++;
             int tissueStatus = BigDecimal.valueOf(distance.intValue()).subtract(typeHeight).abs()
                     .compareTo(DeviceConstant.PRODUCT_DIFFER_VALUE) > 0 ? 1 : 0;
-            list.add(new DeviceDetailInfoDTO(ordinal, distance.intValue(), tissueStatus, (int) msg.getMotorStatusList().get(ordinal - 1),
+            list.add(new DeviceDetailInfoDTO(ordinal, distance.intValue(), 0, 1, (int) msg.getMotorStatusList().get(ordinal - 1),
                     null, null, null, null));
         }
         devInfo.setInfoList(list);
@@ -58,15 +58,15 @@ public class DeviceConvert {
     }
 
     public static void setCellMsg(DeviceDetailInfoDTO detailInfo, DeviceCellDetailDTO eventQuantity) {
+        detailInfo.setDeviceQuantity(eventQuantity.getDeviceQuantity());
         detailInfo.setProductId(eventQuantity.getProductId());
-        detailInfo.setProductNums(eventQuantity.getProductNums());
         detailInfo.setProductName(eventQuantity.getProductName());
         detailInfo.setSku(eventQuantity.getSku());
     }
 
     public static void setCellMsg(WipeDeviceInfoDTO deviceInfo, DeviceCellDetailDTO eventQuantity) {
+        deviceInfo.setDeviceQuantity(eventQuantity.getDeviceQuantity());
         deviceInfo.setProductId(eventQuantity.getProductId());
-        deviceInfo.setProductNums(eventQuantity.getProductNums());
         deviceInfo.setProductName(eventQuantity.getProductName());
         deviceInfo.setSku(eventQuantity.getSku());
     }

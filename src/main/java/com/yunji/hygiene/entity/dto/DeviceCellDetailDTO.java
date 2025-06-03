@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeviceCellDetailDTO {
+    private Integer deviceQuantity;
     private Integer ordinal;
     private Long productId;
-    private Integer productNums;
     private String sku;
     private String productName;
 }

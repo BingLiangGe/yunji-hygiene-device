@@ -18,6 +18,6 @@ public class CabinetCalculate {
     public static DeviceCellDetailDTO getEventQuantity(ContainerCellPO cell, Integer distance, BigDecimal typeHeight, BigDecimal productHeight) {
         BigDecimal quantity = typeHeight.subtract(new BigDecimal(distance)).add(DeviceConstant.PRODUCT_DIFFER_VALUE)
                 .divide(productHeight, 0, RoundingMode.DOWN);
-        return new DeviceCellDetailDTO(cell.getOrdinal(), cell.getProductId(), quantity.intValue(),null,null);
+        return new DeviceCellDetailDTO(quantity.intValue(), cell.getOrdinal(), cell.getProductId(), null, null);
     }
 }

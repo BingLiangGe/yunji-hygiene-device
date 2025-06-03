@@ -24,15 +24,16 @@ public class WipeDeviceInfoDTO extends DeviceInfoDTO implements Serializable {
     private Integer inLimitStatus; //  是否完全进仓
     private Integer outLimitStatus; //  是否完全出仓
     private Integer distance;  // 距离
+    private Integer deviceQuantity; //实际设备检测数量
     private Integer tissueStatus; // 是否有货
     private Long productId;
-    private Integer productNums;
+    private Integer productQuantity;
     private String sku;
     private String productName;
 
     @Override
     public List<DeviceDetailInfoDTO> getInfoList() {
-        return Lists.newArrayList(new DeviceDetailInfoDTO(1, getDistance(),
-                getTissueStatus(), 1, getProductId(), getProductNums(), getSku(), getProductName()));
+        return Lists.newArrayList(new DeviceDetailInfoDTO(1, getDistance(), getDeviceQuantity(),
+                getTissueStatus(), 1, getProductId(), getProductQuantity(), getSku(), getProductName()));
     }
 }
