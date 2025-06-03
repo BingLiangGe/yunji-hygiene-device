@@ -35,13 +35,13 @@ public class DeviceController {
     @Resource
     private DeviceService deviceService;
 
-    @HMACAuth
+   // @HMACAuth
     @GetMapping(value = "/test")
     public Response<?> test() {
         return ResponseHelper.success();
     }
 
-    @HMACAuth
+   // @HMACAuth
     @PostMapping(value = "/command")
     public Response<String> command(@RequestBody @Valid EnterCommandDTO cmd) {
 //        boolean ping = deviceCallService.ping(cmd.getImei(), false);
@@ -53,7 +53,7 @@ public class DeviceController {
         return ResponseHelper.failure("指令下达失败:" + cmd.getImei());
     }
 
-    @HMACAuth
+   // @HMACAuth
     @PostMapping(value = "/upgrade")
     public Response<String> upgrade(@RequestBody @Valid UpgradeCommandDTO cmd) {
         log.debug("DeviceController upgrade :{}", JsonUtil.toJsonString(cmd));
@@ -89,21 +89,21 @@ public class DeviceController {
         return false;
     }
 
-    @HMACAuth
+  //  @HMACAuth
     @GetMapping(value = "/online/{imei}")
     public boolean online(@PathVariable String imei) {
         deviceService.cabinetOnline(imei, true);
         return true;
     }
 
-    @HMACAuth
+  //  @HMACAuth
     @GetMapping(value = "/offline/{imei}")
     public boolean offline(@PathVariable String imei) {
         deviceService.cabinetOffline(imei, true);
         return true;
     }
 
-    @HMACAuth
+    //@HMACAuth
     @GetMapping(value = "/statusList")
     public Map<String, Channel> statusList() {
         return ChannelManager.getChannelMap();

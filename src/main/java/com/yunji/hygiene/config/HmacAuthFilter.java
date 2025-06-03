@@ -71,6 +71,7 @@ public class HmacAuthFilter extends OncePerRequestFilter {
         long ts = Long.parseLong(timestamp);
         long now = System.currentTimeMillis() / 1000;
         if (Math.abs(now - ts) > 300) {
+            log.info("HmacAuthFilter Request expired signature:{}", signature);
             response.sendError(HttpStatus.UNAUTHORIZED.value(), "Request expired");
             return;
         }
@@ -78,8 +79,8 @@ public class HmacAuthFilter extends OncePerRequestFilter {
                 .lines().collect(Collectors.joining());
         String expected = DeviceSignatureUtil.generateSignature(ts, nonce, body, SECRET);
         if (!signature.equals(expected)) {
+            log.info("HmacAuthFilter exceeds expected signature:{}, actual signature:{}", expected, signature);
             response.sendError(HttpStatus.UNAUTHORIZED.value(), "Invalid signature");
-            log.debug("HmacAuthFilter exceeds expected signature:{}, actual signature:{}", expected, signature);
             return;
         }
         HttpServletRequest wrappedRequest = wrapRequestWithBody(request, body);
