@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  * @date : 2025/5/16 10:29
  * @description : TODO
  **/
-@Component
+//@Component
 @Slf4j
 @Profile("prod")
 public class HmacAuthFilter extends OncePerRequestFilter {

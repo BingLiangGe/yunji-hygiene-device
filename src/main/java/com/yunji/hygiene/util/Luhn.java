@@ -31,9 +31,27 @@ public class Luhn {
         return (10 - (sum % 10)) % 10;
     }
 
+//    public static int calculateCheckDigit(String imeiWithoutCheckDigit) {
+//        if (imeiWithoutCheckDigit == null || imeiWithoutCheckDigit.length() != 14) {
+//            throw new DeviceException(DeviceErrorEnum.CHECKED_202505, imeiWithoutCheckDigit);
+//        }
+//
+//        int sum = 0;
+//        for (int i = 0; i < 14; i++) {
+//            int digit = imeiWithoutCheckDigit.charAt(13 - i) - '0'; // 从右往左
+//            if (i % 2 == 0) { // 右起偶数位（原始的 Luhn 规则）
+//                digit *= 2;
+//                if (digit > 9) digit -= 9;
+//            }
+//            sum += digit;
+//        }
+//
+//        return (10 - (sum % 10)) % 10;
+//    }
+
     public static void main(String[] args) {
         // 示例：IMEI 前 14 位
-        String imeiWithoutCheckDigit = "86013707390090";
+        String imeiWithoutCheckDigit = "8606500774474";
         // 计算校验码
         int checkDigit = calculateCheckDigit(imeiWithoutCheckDigit);
         // 输出完整的 IMEI（包含校验码）
