@@ -46,3 +46,10 @@ spring:
       register-mbeans: false
       # 是否允许通过这个连接池进行自动提交
       auto-commit: true
+logging:
+  level:
+    org:
+      hibernate: error
+      hibernate.SQL: off
+      hibernate.type.descriptor.sql.BasicBinder: off
+    org.springframework.orm.jpa: error

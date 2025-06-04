@@ -4,7 +4,6 @@ import com.yunji.hygiene.config.ChannelManager;
 import com.yunji.hygiene.config.HMACAuth;
 import com.yunji.hygiene.entity.dto.EnterCommandDTO;
 import com.yunji.hygiene.entity.dto.UpgradeCommandDTO;
-import com.yunji.hygiene.entity.po.UpgradeFilePO;
 import com.yunji.hygiene.response.Response;
 import com.yunji.hygiene.response.ResponseHelper;
 import com.yunji.hygiene.service.DeviceCallService;
@@ -35,25 +34,32 @@ public class DeviceController {
     @Resource
     private DeviceService deviceService;
 
-   // @HMACAuth
+    @HMACAuth
     @GetMapping(value = "/test")
     public Response<?> test() {
         return ResponseHelper.success();
     }
 
-   // @HMACAuth
+    @HMACAuth
+    @PostMapping(value = "/testHmacAuth")
+    public Response<?> testHmacAuth(@RequestBody @Valid EnterCommandDTO cmd) {
+        System.out.println(cmd.getImei());
+        return ResponseHelper.success();
+    }
+
+    @HMACAuth
     @PostMapping(value = "/command")
     public Response<String> command(@RequestBody @Valid EnterCommandDTO cmd) {
 //        boolean ping = deviceCallService.ping(cmd.getImei(), false);
 //        if (ping) {
-            boolean command = deviceCallService.command(cmd);
-            if (command)
-                return ResponseHelper.success();
-    //    }
+        boolean command = deviceCallService.command(cmd);
+        if (command)
+            return ResponseHelper.success();
+        //    }
         return ResponseHelper.failure("指令下达失败:" + cmd.getImei());
     }
 
-   // @HMACAuth
+    @HMACAuth
     @PostMapping(value = "/upgrade")
     public Response<String> upgrade(@RequestBody @Valid UpgradeCommandDTO cmd) {
         log.debug("DeviceController upgrade :{}", JsonUtil.toJsonString(cmd));
@@ -89,14 +95,14 @@ public class DeviceController {
         return false;
     }
 
-  //  @HMACAuth
+    @HMACAuth
     @GetMapping(value = "/online/{imei}")
     public boolean online(@PathVariable String imei) {
         deviceService.cabinetOnline(imei, true);
         return true;
     }
 
-  //  @HMACAuth
+    @HMACAuth
     @GetMapping(value = "/offline/{imei}")
     public boolean offline(@PathVariable String imei) {
         deviceService.cabinetOffline(imei, true);

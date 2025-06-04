@@ -9,7 +9,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Resource;
@@ -56,6 +55,7 @@ public class HmacAuthFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
+            log.error("HmacAuthFilter exceeds expected error msg:{}", e.getMessage(), e);
             response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Filter error");
         }
     }
@@ -70,16 +70,19 @@ public class HmacAuthFilter extends OncePerRequestFilter {
         }
         long ts = Long.parseLong(timestamp);
         long now = System.currentTimeMillis() / 1000;
-        if (Math.abs(now - ts) > 300) {
-            log.info("HmacAuthFilter Request expired signature:{}", signature);
+        long abs = Math.abs(now - ts);
+        log.info("HmacAuthFilter Request in method:{},diffTime:{}", signature, abs);
+        if (abs > 300) {
+            log.error("HmacAuthFilter Request expired signature:{}", signature);
             response.sendError(HttpStatus.UNAUTHORIZED.value(), "Request expired");
             return;
         }
         String body = new BufferedReader(new InputStreamReader(request.getInputStream()))
                 .lines().collect(Collectors.joining());
         String expected = DeviceSignatureUtil.generateSignature(ts, nonce, body, SECRET);
+        log.info("HmacAuthFilter Request in expected:{}", signature);
         if (!signature.equals(expected)) {
-            log.info("HmacAuthFilter exceeds expected signature:{}, actual signature:{}", expected, signature);
+            log.error("HmacAuthFilter exceeds expected signature:{}, actual signature:{}", expected, signature);
             response.sendError(HttpStatus.UNAUTHORIZED.value(), "Invalid signature");
             return;
         }
@@ -91,12 +94,26 @@ public class HmacAuthFilter extends OncePerRequestFilter {
         return new HttpServletRequestWrapper(request) {
             @Override
             public ServletInputStream getInputStream() {
-                ByteArrayInputStream bais = new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
+                ByteArrayInputStream bi = new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
                 return new ServletInputStream() {
-                    @Override public int read() { return bais.read(); }
-                    @Override public boolean isFinished() { return bais.available() == 0; }
-                    @Override public boolean isReady() { return true; }
-                    @Override public void setReadListener(ReadListener listener) {}
+                    @Override
+                    public int read() {
+                        return bi.read();
+                    }
+
+                    @Override
+                    public boolean isFinished() {
+                        return bi.available() == 0;
+                    }
+
+                    @Override
+                    public boolean isReady() {
+                        return true;
+                    }
+
+                    @Override
+                    public void setReadListener(ReadListener listener) {
+                    }
                 };
             }
 
