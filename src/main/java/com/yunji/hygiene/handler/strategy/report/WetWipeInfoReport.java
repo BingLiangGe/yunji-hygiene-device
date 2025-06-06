@@ -84,14 +84,18 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
             containerPO.setRssi(devInfo.getRssi());
             deviceService.updateCabinet(containerPO);
             ContainerCellPO cellPO = deviceService.getCell(containerPO.getId());
-            ProductPO product = deviceService.getProduct(cellPO.getProductId());
-            BigDecimal typeHeight = deviceService.getTypeHeight(ContainerTypeEnum.WIPE.getTypeCode());
-            DeviceCellDetailDTO eventQuantity = CabinetCalculate.getEventQuantity(cellPO, devInfo.getDistance(), typeHeight, product.getProductHeight());
-            cellPO.setDeviceQuantity(eventQuantity.getDeviceQuantity());
-            // 更新状态到格子表
-            deviceService.updateCell(cellPO);
-            devInfo.setProductQuantity(cellPO.getProductQuantity());
-            DeviceConvert.setCellMsg(devInfo, eventQuantity);
+            if (cellPO != null) {
+                ProductPO product = deviceService.getProduct(cellPO.getProductId());
+                BigDecimal typeHeight = deviceService.getTypeHeight(ContainerTypeEnum.WIPE.getTypeCode());
+                DeviceCellDetailDTO eventQuantity = CabinetCalculate.getEventQuantity(cellPO, devInfo.getDistance(), typeHeight, product.getProductHeight());
+                cellPO.setDeviceQuantity(eventQuantity.getDeviceQuantity());
+                // 更新状态到格子表
+                deviceService.updateCell(cellPO);
+                devInfo.setProductQuantity(cellPO.getProductQuantity());
+                DeviceConvert.setCellMsg(devInfo, eventQuantity);
+            } else {
+                log.error("WetWipeInfoReport cellPO not exist id:{}", containerPO.getId());
+            }
         }
         // 拿到设备状态更新事件
         if (updateEvent)
