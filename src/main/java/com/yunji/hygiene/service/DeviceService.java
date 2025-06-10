@@ -53,10 +53,6 @@ public class DeviceService {
         return productRepo.getProduct(productId);
     }
 
-//    public Long findIdByChipImei(String chip) {
-//        return containerRep.findIdByChipImeiAndDelFlag(chip, 0);
-//    }
-
     public ContainerPO findByChipImei(String chip) {
         return containerRep.findByChipImeiAndDelFlag(chip, 0);
     }
@@ -66,20 +62,28 @@ public class DeviceService {
     }
 
     public void cabinetOnline(String imei, boolean cycle) {
+        cabinetOnline(imei, cycle, false);
+    }
+
+    public void cabinetOnline(String imei, boolean cycle, boolean force) {
         int i = containerRep.cabinetOnline(imei, new Date());
         log.info("DeviceService cabinet online rs:{} imei:{}", i, imei);
         if (cycle)
-            handleCycle(imei, OnlineStatus.ONLINE.getCode());
+            handleCycle(imei, OnlineStatus.ONLINE.getCode(), force);
     }
 
     public void cabinetOffline(String imei, boolean cycle) {
+        cabinetOffline(imei, cycle, false);
+    }
+
+    public void cabinetOffline(String imei, boolean cycle, boolean force) {
         int i = containerRep.cabinetOffline(imei, new Date());
         log.info("DeviceService cabinet offline rs:{} imei:{}", i, imei);
         if (cycle)
-            handleCycle(imei, OnlineStatus.OFFLINE.getCode());
+            handleCycle(imei, OnlineStatus.OFFLINE.getCode(), force);
     }
 
-    public void handleCycle(String imei, Integer status) {
+    public void handleCycle(String imei, Integer status, boolean force) {
         Date date = new Date();
         String key = DeviceLockCode.DEVICE_CYCLE_LOCK + imei;
 //        boolean getLock = LockUtil.tryLock(key, 3, 10, TimeUnit.SECONDS);
@@ -97,7 +101,7 @@ public class DeviceService {
             cycle.setStartTime(date);
             if (newestCycle != null) {
                 log.debug("DeviceService cabinet modifyNewestCycle {}", JsonUtil.toJsonString(newestCycle));
-                if (!status.equals(newestCycle.getCycleType())) {
+                if (force || !status.equals(newestCycle.getCycleType())) {
                     cycleRep.modifyNewestCycle(date, newestCycle.getId());
                     cycleRep.save(cycle);
                 }
@@ -140,7 +144,7 @@ public class DeviceService {
 
     @Transactional
     public void updateCell(ContainerCellPO cell) {
-      ///  cellRepo.updateCell(ordinal, containerId, distance, deviceQuantity);
+        ///  cellRepo.updateCell(ordinal, containerId, distance, deviceQuantity);
         cellRepo.save(cell);
     }
 

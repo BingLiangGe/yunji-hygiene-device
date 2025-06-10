@@ -98,14 +98,14 @@ public class DeviceController {
     @HMACAuth
     @GetMapping(value = "/online/{imei}")
     public boolean online(@PathVariable String imei) {
-        deviceService.cabinetOnline(imei, true);
+        deviceService.cabinetOnline(imei, true, true);
         return true;
     }
 
     @HMACAuth
     @GetMapping(value = "/offline/{imei}")
     public boolean offline(@PathVariable String imei) {
-        deviceService.cabinetOffline(imei, true);
+        deviceService.cabinetOffline(imei, true, true);
         return true;
     }
 
