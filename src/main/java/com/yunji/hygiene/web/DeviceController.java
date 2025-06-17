@@ -2,12 +2,14 @@ package com.yunji.hygiene.web;
 
 import com.yunji.hygiene.config.ChannelManager;
 import com.yunji.hygiene.config.HMACAuth;
+import com.yunji.hygiene.constant.DeviceCacheCode;
 import com.yunji.hygiene.entity.dto.EnterCommandDTO;
 import com.yunji.hygiene.entity.dto.UpgradeCommandDTO;
 import com.yunji.hygiene.response.Response;
 import com.yunji.hygiene.response.ResponseHelper;
 import com.yunji.hygiene.service.DeviceCallService;
 import com.yunji.hygiene.service.DeviceService;
+import com.yunji.hygiene.service.SystemUtil;
 import com.yunji.hygiene.util.JsonUtil;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +17,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.Map;
+
+import static java.util.concurrent.TimeUnit.HOURS;
 
 
 /**
@@ -85,14 +90,14 @@ public class DeviceController {
     public boolean status(@PathVariable String imei) {
         boolean online = ChannelManager.online(imei);
         log.info("hygiene device online status imei:{},online:{}", imei, online);
-        if (!online)
-            deviceService.updateStatus(imei, false);
-        if (online) {
+//        if (!online)
+//            deviceService.updateStatus(imei, false);
+//        if (online) {
             boolean ack = deviceCallService.ping(imei, true);
             log.info("hygiene device ping ack imei:{},online:{}", imei, ack);
             return ack;
-        }
-        return false;
+//        }
+//        return false;
     }
 
     @HMACAuth
@@ -113,5 +118,25 @@ public class DeviceController {
     @GetMapping(value = "/statusList")
     public Map<String, Channel> statusList() {
         return ChannelManager.getChannelMap();
+    }
+
+    @GetMapping(value = "/sleepList/{imei}")
+    public boolean sleepList(@PathVariable String imei) {
+        String[] split = imei.split(",");
+        for (String s : split) {
+            SystemUtil.redisCache.set(DeviceCacheCode.DEVICE_SLEEP + s, new Date(), 2000, HOURS);
+            log.info("{}休眠成功", s);
+        }
+        return true;
+    }
+
+    @GetMapping(value = "/deleteSleep/{imei}")
+    public boolean deleteSleep(@PathVariable String imei) {
+        String[] split = imei.split(",");
+        for (String s : split) {
+            SystemUtil.redisCache.delete(DeviceCacheCode.DEVICE_SLEEP + s);
+            log.info("{}删除休眠", s);
+        }
+        return true;
     }
 }

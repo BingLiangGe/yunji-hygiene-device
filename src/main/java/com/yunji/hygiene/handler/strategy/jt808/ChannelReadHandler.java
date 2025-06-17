@@ -52,25 +52,19 @@ public class ChannelReadHandler extends SimpleChannelInboundHandler<DataPacket> 
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        log.debug("BaseChannelReadHandler channelActive tcp connected");
+        ctx.channel().attr(ChannelManager.TERMINAL_IMEI).set("UNKNOWN");
+        log.info("BaseChannelReadHandler channelActive tcp connected");
         super.channelActive(ctx);
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        if (ctx.pipeline().last() == this) {
-            Channel channel = ctx.channel();
-            String imei = ChannelManager.getImei(channel);
-            log.debug("BaseChannelReadHandler channelInactive：{}", ChannelManager.getImei(channel));
-            deviceService.cabinetOffline(imei, false);
-            super.channelInactive(ctx);
-        }
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        log.error("exceptionCaught", cause);
-        ctx.close();
+        Channel channel = ctx.channel();
+        String imei = ChannelManager.getImei(channel);
+        log.error("BaseChannelReadHandler channelInactive：{}", imei);
+        deviceService.cabinetOffline(imei, true);
+        ChannelManager.removeByChannel(channel);
+        super.channelInactive(ctx);
     }
 
     @Override
@@ -83,7 +77,6 @@ public class ChannelReadHandler extends SimpleChannelInboundHandler<DataPacket> 
             if (state == IdleState.READER_IDLE) {
                 if (!SystemUtil.redisCache.hasKey(DeviceCacheCode.DEVICE_SLEEP + imei)) {
                     log.error("客户端{}出现问题,非休眠且长时间没接到客户端数据,即将关闭连接 imei:{}", channel.remoteAddress(), imei);
-                    deviceService.cabinetOffline(imei, true);
                     ctx.close();
                 }
             } else if (state == IdleState.WRITER_IDLE) {
@@ -96,5 +89,10 @@ public class ChannelReadHandler extends SimpleChannelInboundHandler<DataPacket> 
         }
     }
 
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        log.error("ChannelReadHandler exceptionCaught", cause);
+        ctx.close();
+    }
 
 }

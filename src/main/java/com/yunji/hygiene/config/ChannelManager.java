@@ -34,33 +34,25 @@ public class ChannelManager {
     private final static Map<String, DeviceChannel> channelIdMap = new ConcurrentHashMap<>();
     private final static ReentrantLock lock = new ReentrantLock();
 
-    //public static final AttributeKey<UpGradeFileData> FILE_DATA_KEY = AttributeKey.valueOf("fileData");
-
-    public static final ChannelFutureListener remover = future -> {
-        try {
+//    public static final ChannelFutureListener remover = future -> {
+//        try {
 //            String imei = future.channel().attr(TERMINAL_IMEI).get();
 //            DeviceChannel deviceChannel = channelIdMap.get(imei);
 //            if (deviceChannel != null && deviceChannel.getChannelId() == future.channel().id()) {
 //                Channel channel = channelGroup.find(deviceChannel.getChannelId());
-//    //            byte[] byteBuf = channel.attr(ITranReportMsg.FILE_DATA_KEY).get();
-//    //            if (byteBuf != null)
-//    //                channel.attr(ITranReportMsg.FILE_DATA_KEY).set(null);
-//                channelGroup.remove(channel);
+//                if (channel != null) {
+//                    channelGroup.remove(channel);
+//                }
 //                channelIdMap.remove(imei);
 //            }
-            String imei = future.channel().attr(TERMINAL_IMEI).get();
-            DeviceChannel deviceChannel = channelIdMap.get(imei);
-            if (deviceChannel != null && deviceChannel.getChannelId() == future.channel().id()) {
-                Channel channel = channelGroup.find(deviceChannel.getChannelId());
-                if (channel != null) {
-                    channelGroup.remove(channel);
-                    channel.attr(TERMINAL_IMEI).set(null); // <-- 关键，加上
-                }
-                channelIdMap.remove(imei);
-            }
-        } catch (Exception e) {
-            log.error("Error during channel removal", e);
-        }
+//        } catch (Exception e) {
+//            log.error("Error during channel removal", e);
+//        }
+//    };
+
+    public static final ChannelFutureListener remover = future -> {
+        String imei = future.channel().attr(TERMINAL_IMEI).get();
+        log.error("Error during channel removal imei:{} remover after channelActive if imei is null ", imei);
     };
 
     public static String getImei(Channel channel) {
@@ -98,14 +90,22 @@ public class ChannelManager {
             throw new DeviceException(DeviceErrorEnum.CHECKED_202504, imei);
     }
 
-    public static void remove(String imei) {
+    public static void removeByImei(String imei) {
+        removeByChannel(getChannel(imei));
+    }
+
+    public static void removeByChannel(Channel channel) {
         lock.lock();
         try {
-            Channel channel = getChannel(imei);
-            if (channel != null) {
-                channel.attr(TERMINAL_IMEI).set(null);
-                channel.close();
+            String imei = channel.attr(TERMINAL_IMEI).get();
+            DeviceChannel deviceChannel = channelIdMap.get(imei);
+            if (deviceChannel != null && deviceChannel.getChannelId() == channel.id()) {
+                channelGroup.remove(channel);
+                channelIdMap.remove(imei);
+                channel.attr(ChannelManager.TERMINAL_IMEI).set(null);
             }
+        } catch (Exception e) {
+            log.error("Error during channel removal", e);
         } finally {
             lock.unlock();
         }

@@ -1,11 +1,13 @@
 package com.yunji.test;
 
+import com.google.common.collect.Lists;
 import com.yunji.hygiene.constant.JT808Const;
-import com.yunji.hygiene.util.ImeiUtil;
+import com.yunji.hygiene.util.ImeiHexUtil;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 
@@ -14,9 +16,9 @@ public class Jt808Test {
 
     private static final byte START_END_FLAG = 0x7E;
 
-    String imei = "865445078687176";
+    static String imei = "865445078687176";
     // 消息流水号
-    short messageSerialNumber = 0;
+    static short messageSerialNumber = 0;
 
     @Before
     public void init() throws Exception {
@@ -45,7 +47,9 @@ public class Jt808Test {
         buffer.putShort((short) body.length);  // 消息体属性，2字节
 
         // 将手机号转成BCD格式的6字节
-        byte[] phoneBCD = ImeiUtil.imeiToByte(phoneNumber);
+        // byte[] phoneBCD = ImeiUtil.imeiToByte(phoneNumber);
+        phoneNumber = phoneNumber.substring(0, 14);
+        byte[] phoneBCD = hexStringToBytes(ImeiHexUtil.convertToHexAndCompress(phoneNumber));
         buffer.put(phoneBCD);
 
         buffer.putShort(messageSerialNumber);  // 消息流水号，2字节
@@ -77,6 +81,19 @@ public class Jt808Test {
 //        return bcd;
 //    }
 
+    public static byte[] hexStringToBytes(String hex) {
+        if (hex.length() % 2 != 0) {
+            throw new IllegalArgumentException("16进制字符串长度必须为偶数");
+        }
+        int len = hex.length() / 2;
+        byte[] result = new byte[len];
+        for (int i = 0; i < len; i++) {
+            int index = i * 2;
+            result[i] = (byte) Integer.parseInt(hex.substring(index, index + 2), 16);
+        }
+        return result;
+    }
+
     // 将字节数组转换为十六进制字符串
     public static String bytesToHex(byte[] bytes) {
         StringBuilder hexString = new StringBuilder();
@@ -87,9 +104,16 @@ public class Jt808Test {
         return hexString.toString();
     }
 
-    public String getEncodeStr(byte[] messageBody, short messageId) {
+    public static String getEncodeStr(byte[] messageBody, short messageId) {
         // 编码消息
         byte[] encodedMessage = encodeMessage(messageBody, messageId, imei, messageSerialNumber);
+        // 将编码后的字节数组转换成十六进制字符串
+        return bytesToHex(encodedMessage);
+    }
+
+    public static String getEncodeStr(byte[] messageBody, short messageId, String inputImei) {
+        // 编码消息
+        byte[] encodedMessage = encodeMessage(messageBody, messageId, inputImei, messageSerialNumber);
         // 将编码后的字节数组转换成十六进制字符串
         return bytesToHex(encodedMessage);
     }
@@ -110,6 +134,31 @@ public class Jt808Test {
         payload.put("123456".getBytes(JT808Const.DEFAULT_CHARSET));
         byte[] messageBody = payload.array();
         System.out.println(getEncodeStr(messageBody, messageId));
+    }
+
+    public static void generateAuthCode(String imei) {
+        // 消息ID：0x0102 (鉴权)
+        short messageId = JT808Const.TERMINAL_MSG_AUTH;
+        ByteBuffer payload = ByteBuffer.allocate(6);
+        payload.put("123456".getBytes(JT808Const.DEFAULT_CHARSET));
+        byte[] messageBody = payload.array();
+        System.out.println(getEncodeStr(messageBody, messageId, imei));
+    }
+
+    public static void main(String[] args) {
+        ArrayList<String> strings = Lists.newArrayList("867539020148362",
+                "356789041237654",
+                "490154203237518",
+                "353509104582733",
+                "861181041398275",
+                "864789032541660",
+                "352099109674520",
+                "354982063297148",
+                "869532040117839",
+                "356789043216790");
+        for (String string : strings) {
+            generateAuthCode(string);
+        }
     }
 
     @Test

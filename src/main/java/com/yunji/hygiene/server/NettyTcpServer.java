@@ -58,6 +58,7 @@ public class NettyTcpServer {
         serverBootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
                 .childHandler(jt808ChannelInitializer)
+                .option(ChannelOption.SO_REUSEADDR, true)  // 快速重启时端口复用
                 .option(ChannelOption.SO_BACKLOG, 1024) //服务端可连接队列数,对应TCP/IP协议listen函数中backlog参数
                 .childOption(ChannelOption.TCP_NODELAY, true)//立即写出
                 .childOption(ChannelOption.SO_KEEPALIVE, true);//长连接

@@ -44,7 +44,7 @@ public class ImeiHexUtil {
 
     public static void main(String[] args) {
         // 示例：14位数字字符串
-        String numStr = "8606500774474";
+        String numStr = "869532040117839";
         // 转换并输出6字节16进制
         String result = convertToHexAndCompress(numStr);
         System.out.println("result " + result);

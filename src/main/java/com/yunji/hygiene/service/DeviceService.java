@@ -57,15 +57,17 @@ public class DeviceService {
         return containerRep.findByChipImeiAndDelFlag(chip, 0);
     }
 
-    public void updateStatus(String imei, boolean online) {
-        containerRep.updateStatus(imei, online ? OnlineStatus.ONLINE.getCode() : OnlineStatus.OFFLINE.getCode());
-    }
+//    public void updateStatus(String imei, boolean online) {
+//        containerRep.updateStatus(imei, online ? OnlineStatus.ONLINE.getCode() : OnlineStatus.OFFLINE.getCode());
+//    }
 
     public void cabinetOnline(String imei, boolean cycle) {
         cabinetOnline(imei, cycle, false);
     }
 
     public void cabinetOnline(String imei, boolean cycle, boolean force) {
+        if (imei == null || imei.isEmpty())
+            return;
         int i = containerRep.cabinetOnline(imei, new Date());
         log.info("DeviceService cabinet online rs:{} imei:{}", i, imei);
         if (cycle)
@@ -77,6 +79,8 @@ public class DeviceService {
     }
 
     public void cabinetOffline(String imei, boolean cycle, boolean force) {
+        if (imei == null || imei.isEmpty())
+            return;
         int i = containerRep.cabinetOffline(imei, new Date());
         log.info("DeviceService cabinet offline rs:{} imei:{}", i, imei);
         if (cycle)

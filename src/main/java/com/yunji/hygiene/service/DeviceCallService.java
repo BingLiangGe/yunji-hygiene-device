@@ -33,7 +33,12 @@ public class DeviceCallService {
 
     public boolean ping(String imei, boolean reportStatus) {
         boolean ack = command(new EnterCommandDTO(TransEnum.PING.getCmd(), reportStatus ? 0 : -1, imei));
-        deviceService.updateStatus(imei, ack);
+        //deviceService.updateStatus(imei, ack);
+        if (ack) {
+            deviceService.cabinetOnline(imei, true);
+        } else {
+            deviceService.cabinetOffline(imei, true);
+        }
         return ack;
     }
 
