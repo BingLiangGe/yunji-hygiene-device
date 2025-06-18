@@ -53,7 +53,8 @@ public class ChannelReadHandler extends SimpleChannelInboundHandler<DataPacket> 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         ctx.channel().attr(ChannelManager.TERMINAL_IMEI).set("UNKNOWN");
-        log.info("BaseChannelReadHandler channelActive tcp connected");
+        log.info("BaseChannelReadHandler channelActive tcp connected channelId={}, remoteAddress={}",
+                ctx.channel().id(), ctx.channel().remoteAddress());
         super.channelActive(ctx);
     }
 
@@ -61,7 +62,8 @@ public class ChannelReadHandler extends SimpleChannelInboundHandler<DataPacket> 
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
         String imei = ChannelManager.getImei(channel);
-        log.error("BaseChannelReadHandler channelInactive：{}", imei);
+        log.info("BaseChannelReadHandler channelInactive tcp disconnected,imei={} channelId={}, remoteAddress={}", imei,
+                ctx.channel().id(), ctx.channel().remoteAddress());
         deviceService.cabinetOffline(imei, true);
         ChannelManager.removeByChannel(channel);
         super.channelInactive(ctx);

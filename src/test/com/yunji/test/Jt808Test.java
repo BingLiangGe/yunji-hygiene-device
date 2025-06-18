@@ -146,7 +146,7 @@ public class Jt808Test {
     }
 
     public static void main(String[] args) {
-        ArrayList<String> strings = Lists.newArrayList("867539020148362",
+        ArrayList<String> strings = Lists.newArrayList("529957514666661","867539020148362",
                 "356789041237654",
                 "490154203237518",
                 "353509104582733",
