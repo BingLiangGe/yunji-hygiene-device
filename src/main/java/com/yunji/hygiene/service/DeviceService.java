@@ -2,6 +2,7 @@ package com.yunji.hygiene.service;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.yunji.hygiene.config.ChannelManager;
 import com.yunji.hygiene.constant.DeviceCacheCode;
 import com.yunji.hygiene.constant.DeviceConstant;
 import com.yunji.hygiene.constant.DeviceLockCode;
@@ -79,7 +80,7 @@ public class DeviceService {
     }
 
     public void cabinetOffline(String imei, boolean cycle, boolean force) {
-        if (imei == null || imei.isEmpty())
+        if (imei == null || imei.isEmpty() || imei.endsWith(ChannelManager.OLD_CHANNEL_SUFFIX))
             return;
         int i = containerRep.cabinetOffline(imei, new Date());
         log.info("DeviceService cabinet offline rs:{} imei:{}", i, imei);
@@ -89,7 +90,7 @@ public class DeviceService {
 
     public void handleCycle(String imei, Integer status, boolean force) {
         Date date = new Date();
-        String key = DeviceLockCode.DEVICE_CYCLE_LOCK + imei;
+//        String key = DeviceLockCode.DEVICE_CYCLE_LOCK + imei;
 //        boolean getLock = LockUtil.tryLock(key, 3, 10, TimeUnit.SECONDS);
 //        try {
 //            if (getLock) {

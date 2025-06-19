@@ -1,5 +1,6 @@
 package com.yunji.hygiene.entity.domain;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
 import lombok.Data;
 
@@ -13,14 +14,14 @@ import java.util.Date;
 @Data
 public class DeviceChannel {
     private String imei;
-    private ChannelId channelId;
+    private Channel channel;
     private String lastEvent;
     private Date lastTime;
     private String lastCmd;
     private String desc;
 
-    public DeviceChannel(String imei, ChannelId channelId) {
+    public DeviceChannel(String imei, Channel channel) {
         this.imei = imei;
-        this.channelId = channelId;
+        this.channel = channel;
     }
 }

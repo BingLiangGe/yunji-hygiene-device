@@ -14,3 +14,7 @@
 3 ChannelManager大改：修改netty的removeListener,
 在channelInactive里去配置根据channel找imei 绑定chanel.attr放在同步 不再使用异步回调   0.5天
 4 jt808的鉴权:imei去一位转16进制再转jt808码 为了测试(上周六已完成)
+
+2025-06-19 项目：湿纸巾-设备 提交版本号：v1.0      0.5天
+1 测试tcp连接中，客户端创建新连接,老连接覆盖的问题
+2 ChannelManager加强日志,deviceChannel对象直接存channelId 然后老连接被移除后attr的imei设置为null
