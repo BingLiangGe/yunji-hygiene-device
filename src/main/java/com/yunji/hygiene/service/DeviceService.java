@@ -16,7 +16,6 @@ import com.yunji.hygiene.util.LockUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -62,30 +61,28 @@ public class DeviceService {
 //        containerRep.updateStatus(imei, online ? OnlineStatus.ONLINE.getCode() : OnlineStatus.OFFLINE.getCode());
 //    }
 
-    public void cabinetOnline(String imei, boolean cycle) {
-        cabinetOnline(imei, cycle, false);
+    public void cabinetOnline(String imei) {
+        cabinetOnline(imei, false);
     }
 
-    public void cabinetOnline(String imei, boolean cycle, boolean force) {
+    public void cabinetOnline(String imei, boolean force) {
         if (imei == null || imei.isEmpty())
             return;
         int i = containerRep.cabinetOnline(imei, new Date());
         log.info("DeviceService cabinet online rs:{} imei:{}", i, imei);
-        if (cycle)
-            handleCycle(imei, OnlineStatus.ONLINE.getCode(), force);
+        handleCycle(imei, OnlineStatus.ONLINE.getCode(), force);
     }
 
-    public void cabinetOffline(String imei, boolean cycle) {
-        cabinetOffline(imei, cycle, false);
+    public void cabinetOffline(String imei) {
+        cabinetOffline(imei, false);
     }
 
-    public void cabinetOffline(String imei, boolean cycle, boolean force) {
+    public void cabinetOffline(String imei, boolean force) {
         if (imei == null || imei.isEmpty() || imei.endsWith(ChannelManager.OLD_CHANNEL_SUFFIX))
             return;
         int i = containerRep.cabinetOffline(imei, new Date());
         log.info("DeviceService cabinet offline rs:{} imei:{}", i, imei);
-        if (cycle)
-            handleCycle(imei, OnlineStatus.OFFLINE.getCode(), force);
+        handleCycle(imei, OnlineStatus.OFFLINE.getCode(), force);
     }
 
     public void handleCycle(String imei, Integer status, boolean force) {

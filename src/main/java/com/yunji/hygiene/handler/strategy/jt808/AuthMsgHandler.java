@@ -36,7 +36,7 @@ public class AuthMsgHandler extends AbsChannelReadHandler<AuthMsg> {
     @Override
     protected void readData(ChannelHandlerContext ctx, DataPacket msg) {
         String imei = msg.getHeader().getImei();
-        deviceService.cabinetOnline(imei, true);
+        deviceService.cabinetOnline(imei);
         ChannelManager.add(imei, ctx.channel());
         CommonResp resp = CommonResp.success(msg, getSerialNumber(ctx.channel()));
         log.info("AuthMsgHandler readData,imei:{} ", imei);
