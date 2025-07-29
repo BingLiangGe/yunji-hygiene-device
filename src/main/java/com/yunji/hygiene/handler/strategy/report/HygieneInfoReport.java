@@ -81,7 +81,7 @@ public class HygieneInfoReport extends AbsTranReportMsg {
             cellPO.setDistance(distance);
             cellPO.setInfraredStatus(isInfraredNormal ? 0 : 1);
             ProductPO product = deviceService.getProduct(cellPO.getProductId());
-            DeviceCellDetailDTO eventQuantity = CabinetCalculate.getEventQuantity(cellPO, detailInfo.getDistance(), typeHeight, product.getProductHeight());
+            DeviceCellDetailDTO eventQuantity = CabinetCalculate.getEventQuantity(cellPO, detailInfo.getDistance(), typeHeight, product);
             cellPO.setDeviceQuantity(eventQuantity.getDeviceQuantity());
             deviceService.updateCell(cellPO);
             detailInfo.setProductQuantity(cellPO.getProductQuantity());

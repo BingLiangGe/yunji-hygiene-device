@@ -16,6 +16,7 @@ import com.yunji.hygiene.util.LockUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -171,6 +172,12 @@ public class DeviceService {
     public void updateEvent(Long eventId, String afterCmd) {
         eventRepo.updateEvent(eventId, afterCmd, new Date());
     }
+
+    @Transactional
+    public void addEvent(String imei, String afterCmd) {
+        eventRepo.addEvent(imei, afterCmd);
+    }
+
 
     private static final Cache<Long, UpgradeFilePO> upgradeFilecache = CacheBuilder.newBuilder()
             .maximumSize(50) // 最大缓存数量

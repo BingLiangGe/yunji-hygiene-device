@@ -25,7 +25,8 @@ public class DeviceConvert {
         devInfo.setImei(msg.getHeader().getImei());
         devInfo.setSleepStatus((int) msg.getSleepMode());
         devInfo.setLockStatus((int) msg.getLockStatus());
-        devInfo.setInLimitStatus((int) msg.getInLimitStatus());
+        devInfo.setUnexpectedOpen((msg.getInLimitStatus() >> 4) & 0x0F);
+        devInfo.setInLimitStatus(msg.getInLimitStatus() & 0x0F);
         devInfo.setOutLimitStatus((int) msg.getOutLimitStatus());
         devInfo.setDistance(((msg.getDistanceMsb() & 0xFF) << 8) | (msg.getDistanceLsb() & 0xFF));
         devInfo.setBattleLevel((int) msg.getBattleLevel());

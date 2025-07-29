@@ -87,8 +87,8 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
             if (cellPO != null) {
                 ProductPO product = deviceService.getProduct(cellPO.getProductId());
                 BigDecimal typeHeight = deviceService.getTypeHeight(ContainerTypeEnum.WIPE.getTypeCode());
-                DeviceCellDetailDTO eventQuantity = CabinetCalculate.getEventQuantity(cellPO, devInfo.getDistance(), typeHeight, product.getProductHeight());
-                cellPO.setDeviceQuantity(eventQuantity.getDeviceQuantity());
+                DeviceCellDetailDTO eventQuantity = CabinetCalculate.getEventQuantity(cellPO, devInfo.getDistance(), typeHeight, product);
+                eventQuantity.setProductName(product.getProductName());
                 // 更新状态到格子表
                 deviceService.updateCell(cellPO);
                 devInfo.setProductQuantity(cellPO.getProductQuantity());
@@ -102,6 +102,8 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
             deviceService.updateEvent(devInfo.getEventId(), JsonUtil.toJsonString(devInfo));
         if (eventFinish)
             deviceService.eventFinish(devInfo.getEventId());
+        if (devInfo.getUnexpectedOpen() == 1)
+            deviceService.addEvent(devInfo.getImei(), JsonUtil.toJsonString(devInfo));
         // 数据结果更新到缓存
         DeviceInfoCache.createInfo(devInfo);
         CommonResp resp = CommonResp.success(msg, AbsChannelReadHandler.getSerialNumber(ctx.channel()));

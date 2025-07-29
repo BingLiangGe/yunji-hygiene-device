@@ -22,6 +22,7 @@ import java.util.List;
 public class WipeDeviceInfoDTO extends DeviceInfoDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     private Integer inLimitStatus; //  是否完全进仓
+    private Integer unexpectedOpen; //  异常打开
     private Integer outLimitStatus; //  是否完全出仓
     private Integer distance;  // 距离
     private Integer deviceQuantity; //实际设备检测数量
