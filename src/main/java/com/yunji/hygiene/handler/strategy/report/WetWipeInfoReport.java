@@ -39,6 +39,7 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
 
     private static final long EVENT_DIFF_TIME = 10 * 60 * 1000;
     private static final int SLEEP_HOURS = 2000;
+    private static final String ERROR_EXCEPTION = "商品数量异常";
 
     @Override
     public TransReportDTO handleReport(ChannelHandlerContext ctx, ReportMsg msg) {
@@ -93,6 +94,14 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
                 deviceService.updateCell(cellPO);
                 devInfo.setProductQuantity(cellPO.getProductQuantity());
                 DeviceConvert.setCellMsg(devInfo, eventQuantity);
+                if ((devInfo.getProductQuantity() > 0 && devInfo.getTissueStatus() == 0) ||
+                        (devInfo.getProductQuantity() == 0 && devInfo.getTissueStatus() == 1)) {
+                    containerPO.setRuntimeStatus(0);
+                    containerPO.setRuntimeError(ERROR_EXCEPTION);
+                } else {
+                    containerPO.setRuntimeStatus(1);
+                    containerPO.setRuntimeError("");
+                }
             } else {
                 log.error("WetWipeInfoReport cellPO not exist id:{}", containerPO.getId());
             }
