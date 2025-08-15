@@ -68,10 +68,9 @@ public class DeviceController {
     @PostMapping(value = "/upgrade")
     public Response<String> upgrade(@RequestBody @Valid UpgradeCommandDTO cmd) {
         log.debug("DeviceController upgrade :{}", JsonUtil.toJsonString(cmd));
-        boolean upgradeCache = deviceService.createUpgradeCache(cmd);
         boolean ping = deviceCallService.ping(cmd.getImei(), false);
-        if (upgradeCache && ping) {
-            boolean command = deviceCallService.command(cmd);
+        if (ping) {
+            boolean command = deviceCallService.cacheFileUpgrade(cmd);
             if (command)
                 return ResponseHelper.success();
         }

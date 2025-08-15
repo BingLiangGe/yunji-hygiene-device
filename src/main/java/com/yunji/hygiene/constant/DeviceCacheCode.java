@@ -17,4 +17,6 @@ public class DeviceCacheCode {
     public static final String DEVICE_UPGRADE_FILE = DEVICE_CACHE_CODE + "upgrade:file:";
 
     public static final String DEVICE_UPGRADE_TASK = DEVICE_CACHE_CODE +  "upgrade:task:";
+
+    public static final String DEVICE_VERSION = DEVICE_CACHE_CODE + "version:";
 }

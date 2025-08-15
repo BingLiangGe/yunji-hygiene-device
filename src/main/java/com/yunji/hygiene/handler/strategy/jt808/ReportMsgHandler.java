@@ -1,6 +1,5 @@
 package com.yunji.hygiene.handler.strategy.jt808;
 
-import com.yunji.hygiene.codec.JT808Decoder;
 import com.yunji.hygiene.constant.HandleConstant;
 import com.yunji.hygiene.entity.domain.DataPacket;
 import com.yunji.hygiene.entity.domain.req.jt808.TransMsg;

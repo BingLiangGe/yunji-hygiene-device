@@ -194,6 +194,17 @@ public class DeviceService {
         return otaFileFromCache;
     }
 
+    public UpgradeFilePO getFileByFileCodeLike(String fileCode) {
+        return upgradeFileRepo.getFileByFileCodeLike(fileCode);
+    }
+
+    public static String getVersionPrefix(String version) {
+        String[] parts = version.split("-");
+        if (parts.length >= 4)
+            return String.join("-", parts[0], parts[1], parts[2], parts[3]);
+        log.error("getVersionPrefix error version:{}", version);
+        return version;
+    }
 
 //    public void finishTask(Long infoId) {
 //        upgradeTaskRepo.finishTask(infoId);
@@ -205,8 +216,10 @@ public class DeviceService {
         UpGradeFileDTO upGradeFileData = DeviceFileCache.getInfo(imei);
         if (upGradeFileData != null) {
             Long infoId = upGradeFileData.getInfoId();
-            upgradeInfoRepo.finishTask(infoId);
-            upgradeTaskRepo.finishTask(infoId);
+            if (infoId != null && infoId > 0) {
+                upgradeInfoRepo.finishTask(infoId);
+                upgradeTaskRepo.finishTask(infoId);
+            }
             SystemUtil.redisCache().delete(DeviceCacheCode.DEVICE_UPGRADE + imei);
             //删除升级任务
             SystemUtil.redisCache().delete(DeviceCacheCode.DEVICE_UPGRADE_TASK + imei);

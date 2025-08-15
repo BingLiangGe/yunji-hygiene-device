@@ -5,6 +5,7 @@ import com.yunji.hygiene.entity.domain.DataPacket;
 import com.yunji.hygiene.entity.domain.DeviceException;
 import com.yunji.hygiene.entity.domain.req.jt808.TransMsg;
 import com.yunji.hygiene.entity.dto.EnterCommandDTO;
+import com.yunji.hygiene.entity.dto.UpgradeCommandDTO;
 import com.yunji.hygiene.entity.enums.DeviceErrorEnum;
 import com.yunji.hygiene.entity.enums.TransEnum;
 import com.yunji.hygiene.handler.strategy.jt808.AbsChannelReadHandler;
@@ -36,6 +37,15 @@ public class DeviceCallService {
         if (!ack)
             deviceService.cabinetOffline(imei);
         return ack;
+    }
+
+    public boolean cacheFileUpgrade(UpgradeCommandDTO dto) {
+        boolean upgradeCache = deviceService.createUpgradeCache(dto);
+        if (!upgradeCache) {
+            log.error("cacheFileUpgrade error:{}", JsonUtil.toJsonString(dto));
+            return false;
+        }
+        return command(dto);
     }
 
     public boolean command(EnterCommandDTO dto) {

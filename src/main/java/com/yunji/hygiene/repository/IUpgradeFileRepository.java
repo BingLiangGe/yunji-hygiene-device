@@ -18,4 +18,9 @@ public interface IUpgradeFileRepository extends JpaRepository<UpgradeFilePO, Lon
     @Transactional
     @Query("SELECT u FROM UpgradeFilePO u WHERE u.id=:fileId")
     UpgradeFilePO getFileById(@Param("fileId") Long fileId);
+
+    @Transactional
+    @Query(value = "SELECT * FROM t_upgrade_file WHERE file_code LIKE CONCAT(:fileCode, '%') and current_version=1 LIMIT 1", nativeQuery = true)
+    UpgradeFilePO getFileByFileCodeLike(@Param("fileCode") String fileCode);
+
 }
