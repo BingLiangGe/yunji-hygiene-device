@@ -83,7 +83,6 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
             containerPO.setInLimitStatus(devInfo.getInLimitStatus());
             containerPO.setOutLimitStatus(devInfo.getOutLimitStatus());
             containerPO.setRssi(devInfo.getRssi());
-            deviceService.updateCabinet(containerPO);
             ContainerCellPO cellPO = deviceService.getCell(containerPO.getId());
             if (cellPO != null) {
                 ProductPO product = deviceService.getProduct(cellPO.getProductId());
@@ -105,6 +104,7 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
             } else {
                 log.error("WetWipeInfoReport cellPO not exist id:{}", containerPO.getId());
             }
+            deviceService.updateCabinet(containerPO);
         }
         // 拿到设备状态更新事件
         if (updateEvent)
