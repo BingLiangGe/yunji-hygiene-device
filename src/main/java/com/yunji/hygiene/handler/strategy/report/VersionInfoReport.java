@@ -62,7 +62,7 @@ public class VersionInfoReport extends AbsTranReportMsg {
         int idx = reportVersion.lastIndexOf("-V");
         String reportV = reportVersion.substring(idx + 2);
         log.info("reportVersion:{} ====> currentVersion:{}", reportV, currentV);
-        return Integer.parseInt(currentV) > Integer.parseInt(reportV);
+        return currentV.compareTo(reportV) > 0;
     }
 
     //    public static void main(String[] args) {
