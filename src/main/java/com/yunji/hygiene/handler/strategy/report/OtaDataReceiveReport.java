@@ -29,7 +29,7 @@ public class OtaDataReceiveReport extends AbsTranReportMsg {
     @Override
     public TransReportDTO handleReport(ChannelHandlerContext ctx, ReportMsg msg) {
         UpgradeResp r = (UpgradeResp) msg;
-        log.debug("OtaDataReceiveReport UpgradeResp :{}", JsonUtil.toJsonString(r));
+        log.info("OtaDataReceiveReport UpgradeResp :{}", JsonUtil.toJsonString(r));
         UpGradeFileDTO upGradeFileData = DeviceFileCache.getInfo(msg.getHeader().getImei());
         log.info("OtaDataReceiveReport handleReport :{}", upGradeFileData);
         if (upGradeFileData != null) {

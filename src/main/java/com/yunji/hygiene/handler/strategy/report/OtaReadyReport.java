@@ -37,7 +37,7 @@ public class OtaReadyReport extends AbsTranReportMsg {
         if (DeviceConstant.SUCCESS.equals(resp.getResult())) {
             OtaTransMsg otaTransMsg = new OtaTransMsg();
             otaTransMsg.setEventId(-1);
-            log.debug("OtaReadyReport handleReport msg :{}", JsonUtil.toJsonString(msg));
+            log.info("OtaReadyReport handleReport msg :{}", JsonUtil.toJsonString(msg));
             UpGradeFileDTO upGradeFileData = DeviceFileCache.getInfo(msg.getHeader().getImei());
             log.info("OtaReadyReport handleReport success :{}", upGradeFileData);
             UpgradeFilePO file = deviceService.getFile(upGradeFileData.getFileId());

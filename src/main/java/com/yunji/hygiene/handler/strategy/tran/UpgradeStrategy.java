@@ -22,9 +22,9 @@ public class UpgradeStrategy implements ITransMsgStrategy {
 
     @Override
     public TransMsg strategyTranMsg(EnterCommandDTO writeData) {
-        log.debug("UpgradeStrategy strategyTranMsg getWriteData:{}", JsonUtil.toJsonString(writeData));
+        log.info("UpgradeStrategy strategyTranMsg getWriteData:{}", JsonUtil.toJsonString(writeData));
         UpGradeFileDTO info = DeviceFileCache.getInfo(writeData.getImei());
-        log.debug("UpgradeStrategy strategyTranMsg getInfo:{}", JsonUtil.toJsonString(info));
+        log.info("UpgradeStrategy strategyTranMsg getInfo:{}", JsonUtil.toJsonString(info));
         OtaReadyTransMsg rs = new OtaReadyTransMsg();
         rs.setEventId(-1);
         rs.setMessageType(TransEnum.OTA_READY.getIssueType());

@@ -67,7 +67,7 @@ public class DeviceController {
     @HMACAuth
     @PostMapping(value = "/upgrade")
     public Response<String> upgrade(@RequestBody @Valid UpgradeCommandDTO cmd) {
-        log.debug("DeviceController upgrade :{}", JsonUtil.toJsonString(cmd));
+        log.info("DeviceController upgrade :{}", JsonUtil.toJsonString(cmd));
         boolean ping = deviceCallService.ping(cmd.getImei(), false);
         if (ping) {
             boolean command = deviceCallService.cacheFileUpgrade(cmd);
