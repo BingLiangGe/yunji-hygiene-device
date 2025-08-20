@@ -39,9 +39,8 @@ public class LockUtil implements Closeable {
                                             long waitTime, long leaseTime, TimeUnit timeUnit, long sleepWait) {
         long startTime = System.currentTimeMillis();
         long waitMillis = timeUnit.toMillis(waitTime);
-        long leaseMillis = timeUnit.toMillis(leaseTime);
         while ((System.currentTimeMillis() - startTime) < waitMillis) {
-            Boolean success = redisTemplate.opsForValue().setIfAbsent(key, value, leaseMillis, timeUnit);
+            Boolean success = redisTemplate.opsForValue().setIfAbsent(key, value, leaseTime, timeUnit);
             if (Boolean.TRUE.equals(success)) {
                 return true;
             }
