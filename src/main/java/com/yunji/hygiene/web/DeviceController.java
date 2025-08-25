@@ -47,7 +47,6 @@ public class DeviceController {
         return ResponseHelper.success();
     }
 
-    @HMACAuth
     @GetMapping(value = "/reset/{imei}")
     public Response<?> reset(@PathVariable String imei) {
         return ResponseHelper.success(deviceCallService.reset(imei));
