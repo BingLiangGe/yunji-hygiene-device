@@ -16,6 +16,7 @@ public enum TransEnum {
     SHOPPING("SHIPPING", (byte) 5, "出货仓门"),
     IR_DISTANCE("IR_DISTANCE", (byte) 6, "????"),//保留不用
     SYS_INFO("SYS_INFO", (byte) 7, "状态上报"),
+    DEVICE_RESET("DEVICE_RESET", (byte) 8, "设备重启"),
     OTA_READY("OTA_READY", (byte) 10, "ota准备"),
     OTA_DATA_RECEIVE("OTA_DATA_RECEIVE", (byte) 11, "ota数据接受"),
     OTA_DATA_EOP("OTA_DATA_EOP", (byte) 12, "ota_eop");

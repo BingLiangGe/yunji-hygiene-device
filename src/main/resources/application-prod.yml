@@ -22,6 +22,11 @@ spring:
         max-active: 8
         # #连接池最大阻塞等待时间（使用负值表示没有限制）
         max-wait: -1ms
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        show_sql: false
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
@@ -46,10 +51,3 @@ spring:
       register-mbeans: false
       # 是否允许通过这个连接池进行自动提交
       auto-commit: true
-logging:
-  level:
-    org:
-      hibernate: error
-      hibernate.SQL: off
-      hibernate.type.descriptor.sql.BasicBinder: off
-    org.springframework.orm.jpa: error

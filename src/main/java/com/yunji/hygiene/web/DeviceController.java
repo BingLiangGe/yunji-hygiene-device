@@ -5,6 +5,7 @@ import com.yunji.hygiene.config.HMACAuth;
 import com.yunji.hygiene.constant.DeviceCacheCode;
 import com.yunji.hygiene.entity.dto.EnterCommandDTO;
 import com.yunji.hygiene.entity.dto.UpgradeCommandDTO;
+import com.yunji.hygiene.entity.po.ContainerCellPO;
 import com.yunji.hygiene.response.Response;
 import com.yunji.hygiene.response.ResponseHelper;
 import com.yunji.hygiene.service.DeviceCallService;
@@ -39,10 +40,17 @@ public class DeviceController {
     @Resource
     private DeviceService deviceService;
 
-    @HMACAuth
     @GetMapping(value = "/test")
     public Response<?> test() {
+        ContainerCellPO cell = deviceService.getCell(3459L);
+        System.out.println(cell);
         return ResponseHelper.success();
+    }
+
+    @HMACAuth
+    @GetMapping(value = "/reset/{imei}")
+    public Response<?> reset(@PathVariable String imei) {
+        return ResponseHelper.success(deviceCallService.reset(imei));
     }
 
     @HMACAuth

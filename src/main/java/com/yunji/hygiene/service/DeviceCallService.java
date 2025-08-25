@@ -39,6 +39,11 @@ public class DeviceCallService {
         return ack;
     }
 
+    public boolean reset(String imei) {
+        return command(new EnterCommandDTO(TransEnum.DEVICE_RESET.getCmd(), -1, imei));
+    }
+
+
     public boolean cacheFileUpgrade(UpgradeCommandDTO dto) {
         boolean upgradeCache = deviceService.createUpgradeCache(dto);
         if (!upgradeCache) {

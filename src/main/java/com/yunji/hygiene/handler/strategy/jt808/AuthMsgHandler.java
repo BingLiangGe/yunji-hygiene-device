@@ -12,6 +12,7 @@ import com.yunji.hygiene.entity.enums.TransStrategyEnum;
 import com.yunji.hygiene.service.DeviceCallService;
 import com.yunji.hygiene.service.DeviceFileCache;
 import com.yunji.hygiene.service.SystemUtil;
+import com.yunji.hygiene.util.JsonUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,7 @@ public class AuthMsgHandler extends AbsChannelReadHandler<AuthMsg> {
         log.info("AuthMsgHandler readData,imei:{} ", imei);
         if (SystemUtil.redisCache().hasKey(DeviceCacheCode.DEVICE_UPGRADE_TASK + imei)) {
             UpGradeFileDTO info = DeviceFileCache.getInfo(imei);
+            log.info("AuthMsgHandler hasKey DEVICE_UPGRADE_TASK start upgrade,imei:{} info:{}", imei, JsonUtil.toJsonString(info));
             if (info != null)
                 deviceCallService.command(new UpgradeCommandDTO(TransStrategyEnum.DEVICE_GRADE.name(), -1, imei
                         , info.getFileId(), info.getInfoId()));
