@@ -22,6 +22,7 @@ public class TransMsgStrategyFactory {
         strategies.put(TransStrategyEnum.CLOSE_SHIPPING.name(), new CloseShippingStrategy());
         strategies.put(TransStrategyEnum.PING.name(), new PingStrategy());
         strategies.put(TransStrategyEnum.GET_VERSION.name(), new GetVersionStrategy());
+        strategies.put(TransStrategyEnum.DEVICE_RESET.name(), new ResetStrategy());
         strategies.put(TransStrategyEnum.DEVICE_GRADE.name(), new UpgradeStrategy());
     }
 

@@ -13,6 +13,7 @@ public enum TransStrategyEnum {
     PING,//ping机器
     GET_DEVICE_INFO,// 获取设备信息
     GET_VERSION,//获取版本号
-    DEVICE_GRADE//升级
+    DEVICE_GRADE,//升级
+    DEVICE_RESET,//重置
     ;
 }
