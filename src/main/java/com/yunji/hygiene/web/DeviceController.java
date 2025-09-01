@@ -75,12 +75,9 @@ public class DeviceController {
     @PostMapping(value = "/upgrade")
     public Response<String> upgrade(@RequestBody @Valid UpgradeCommandDTO cmd) {
         log.info("DeviceController upgrade :{}", JsonUtil.toJsonString(cmd));
-        boolean ping = deviceCallService.ping(cmd.getImei(), false);
-        if (ping) {
-            boolean command = deviceCallService.cacheFileUpgrade(cmd);
-            if (command)
-                return ResponseHelper.success();
-        }
+        boolean command = deviceCallService.cacheFileUpgrade(cmd);
+        if (command)
+            return ResponseHelper.success();
         return ResponseHelper.failure("升级失败:" + cmd.getImei());
     }
 
@@ -99,9 +96,9 @@ public class DeviceController {
 //        if (!online)
 //            deviceService.updateStatus(imei, false);
 //        if (online) {
-            boolean ack = deviceCallService.ping(imei, true);
-            log.info("hygiene device ping ack imei:{},online:{}", imei, ack);
-            return ack;
+        boolean ack = deviceCallService.ping(imei, true);
+        log.info("hygiene device ping ack imei:{},online:{}", imei, ack);
+        return ack;
 //        }
 //        return false;
     }
