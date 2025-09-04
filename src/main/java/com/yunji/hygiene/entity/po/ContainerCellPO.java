@@ -43,11 +43,11 @@ public class ContainerCellPO {
     @Column(name = "product_quantity")
     private Integer productQuantity;
 
-    @Column(name = "lack_status")
-    private Integer lackStatus;
+//    @Column(name = "lack_status")
+//    private Integer lackStatus;
 
-    @Column(name = "lack_time")
-    private Instant lackTime;
+//    @Column(name = "lack_time")
+//    private Instant lackTime;
 
     @Column(name = "ceiling_quantity")
     private Integer ceilingQuantity;
