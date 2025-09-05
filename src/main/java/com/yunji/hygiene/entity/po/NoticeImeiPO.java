@@ -17,23 +17,20 @@ public class NoticeImeiPO {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @NotNull
     @Column(name = "notice_type", nullable = false)
     private Integer noticeType;
 
     @Size(max = 32)
-    @NotNull
     @Column(name = "imei", nullable = false, length = 32)
     private String imei;
 
-    @Size(max = 50)
-    @NotNull
-    @Column(name = "is_consume", nullable = false, length = 50)
+    @Column(name = "is_consume")
     private Integer isConsume;
 
-    public NoticeImeiPO(String imei, Integer noticeType) {
+    public NoticeImeiPO(String imei, Integer noticeType,Integer isConsume) {
         this.imei = imei;
         this.noticeType = noticeType;
+        this.isConsume = isConsume;
     }
 
     public NoticeImeiPO() {

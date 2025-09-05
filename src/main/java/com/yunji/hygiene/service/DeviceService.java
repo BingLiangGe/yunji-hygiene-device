@@ -55,7 +55,7 @@ public class DeviceService {
     public void noticeImei(String imei, int type) {
         NoticeImeiPO n = noticeImeiRepo.getNoticeImei(imei, type);
         if (n == null)
-            noticeImeiRepo.save(new NoticeImeiPO(imei, type));
+            noticeImeiRepo.save(new NoticeImeiPO(imei, type, 0));
     }
 
     public ProductPO getProduct(Long productId) {
