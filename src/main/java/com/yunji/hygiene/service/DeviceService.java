@@ -52,8 +52,10 @@ public class DeviceService {
     @Resource
     private INoticeImeiRepo noticeImeiRepo;
 
-    public void saveNoticeImei(NoticeImeiPO noticeImei) {
-        noticeImeiRepo.save(noticeImei);
+    public void noticeImei(String imei, int type) {
+        NoticeImeiPO n = noticeImeiRepo.getNoticeImei(imei, type);
+        if (n == null)
+            noticeImeiRepo.save(new NoticeImeiPO(imei, type));
     }
 
     public ProductPO getProduct(Long productId) {
@@ -260,6 +262,7 @@ public class DeviceService {
     public BigDecimal getTypeHeight(String typeCode) {
         return typeRepository.getTypeHeight(typeCode);
     }
+
 
 //    public void updateHygieneCabinet(Long id, Integer rssi, Integer lockStatus) {
 //        //containerRep.updateHygieneCabinet(id, rssi, lockStatus);

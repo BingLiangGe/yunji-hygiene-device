@@ -26,6 +26,11 @@ public class NoticeImeiPO {
     @Column(name = "imei", nullable = false, length = 32)
     private String imei;
 
+    @Size(max = 50)
+    @NotNull
+    @Column(name = "is_consume", nullable = false, length = 50)
+    private Integer isConsume;
+
     public NoticeImeiPO(String imei, Integer noticeType) {
         this.imei = imei;
         this.noticeType = noticeType;

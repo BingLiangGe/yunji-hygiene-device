@@ -10,7 +10,6 @@ import com.yunji.hygiene.entity.dto.WipeDeviceInfoDTO;
 import com.yunji.hygiene.entity.enums.ContainerTypeEnum;
 import com.yunji.hygiene.entity.po.ContainerCellPO;
 import com.yunji.hygiene.entity.po.ContainerPO;
-import com.yunji.hygiene.entity.po.NoticeImeiPO;
 import com.yunji.hygiene.entity.po.ProductPO;
 import com.yunji.hygiene.handler.calculate.CabinetCalculate;
 import com.yunji.hygiene.handler.convert.DeviceConvert;
@@ -74,7 +73,7 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
             if (battleStatus == 1 && devInfo.getBattleLevel() <= 30) {
                 containerPO.setBattleStatus(0);
                 containerPO.setUpdateBattleTime(new Date());
-                deviceService.saveNoticeImei(new NoticeImeiPO(containerPO.getChipImei(), 7));
+                deviceService.noticeImei(containerPO.getChipImei(), 7);
             } else if (battleStatus == 0 && devInfo.getBattleLevel() > 30) {
                 containerPO.setBattleStatus(1);
                 containerPO.setUpdateBattleTime(new Date());
@@ -99,6 +98,7 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
                         (devInfo.getProductQuantity() == 0 && devInfo.getTissueStatus() == 1)) {
                     containerPO.setRuntimeStatus(0);
                     containerPO.setRuntimeError(ERROR_EXCEPTION);
+                    deviceService.noticeImei(containerPO.getChipImei(), 4);
                 } else {
                     containerPO.setRuntimeStatus(1);
                     containerPO.setRuntimeError("");
