@@ -17,8 +17,10 @@ public class CabinetCalculate {
 //        return distance.add(DeviceConstant.PRODUCT_DIFFER_VALUE).divide(productHeight, 0, RoundingMode.DOWN);
 //    }
     public static DeviceCellDetailDTO getEventQuantity(ContainerCellPO cell, Integer distance, BigDecimal typeHeight, ProductPO p) {
-        BigDecimal quantity = typeHeight.subtract(new BigDecimal(distance)).add(DeviceConstant.PRODUCT_DIFFER_VALUE)
-                .divide(p.getProductHeight(), 0, RoundingMode.DOWN);
+        BigDecimal quantity = BigDecimal.ZERO;
+        if (distance != null)
+            quantity = typeHeight.subtract(new BigDecimal(distance)).add(DeviceConstant.PRODUCT_DIFFER_VALUE)
+                    .divide(p.getProductHeight(), 0, RoundingMode.DOWN);
         return new DeviceCellDetailDTO(quantity.intValue(), cell.getOrdinal(), cell.getProductId(), p.getSku(), p.getProductName());
     }
 }
