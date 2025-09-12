@@ -70,10 +70,11 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
         ContainerPO containerPO = deviceService.findByChipImei(imei);
         if (containerPO != null) {
             Integer battleStatus = containerPO.getBattleStatus();
-            if (battleStatus == 1 && devInfo.getBattleLevel() <= 20) {
+            if (battleStatus == 1 && devInfo.getBattleLevel() <= 30) {
                 containerPO.setBattleStatus(0);
                 containerPO.setUpdateBattleTime(new Date());
-            } else if (battleStatus == 0 && devInfo.getBattleLevel() > 20) {
+                deviceService.noticeImei(containerPO.getChipImei(), 7);
+            } else if (battleStatus == 0 && devInfo.getBattleLevel() > 30) {
                 containerPO.setBattleStatus(1);
                 containerPO.setUpdateBattleTime(new Date());
             }
@@ -87,8 +88,11 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
             if (cellPO != null) {
                 ProductPO product = deviceService.getProduct(cellPO.getProductId());
                 BigDecimal typeHeight = deviceService.getTypeHeight(ContainerTypeEnum.WIPE.getTypeCode());
-                DeviceCellDetailDTO eventQuantity = CabinetCalculate.getEventQuantity(cellPO, devInfo.getDistance(), typeHeight, product);
+                // 湿纸巾不拿顶部红外的值
+                DeviceCellDetailDTO eventQuantity = CabinetCalculate.getEventQuantity(cellPO, null, typeHeight, product);
                 eventQuantity.setProductName(product.getProductName());
+                eventQuantity.setDeviceQuantity(devInfo.getTissueStatus());
+                cellPO.setDeviceQuantity(eventQuantity.getDeviceQuantity());
                 // 更新状态到格子表
                 deviceService.updateCell(cellPO);
                 devInfo.setProductQuantity(cellPO.getProductQuantity());
@@ -97,6 +101,7 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
                         (devInfo.getProductQuantity() == 0 && devInfo.getTissueStatus() == 1)) {
                     containerPO.setRuntimeStatus(0);
                     containerPO.setRuntimeError(ERROR_EXCEPTION);
+                    deviceService.noticeImei(containerPO.getChipImei(), 4);
                 } else {
                     containerPO.setRuntimeStatus(1);
                     containerPO.setRuntimeError("");

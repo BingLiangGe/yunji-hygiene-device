@@ -50,6 +50,14 @@ public class DeviceService {
     private IUpgradeInfoRepo upgradeInfoRepo;
     @Resource
     private IProductRepository productRepo;
+    @Resource
+    private INoticeImeiRepo noticeImeiRepo;
+
+    public void noticeImei(String imei, int type) {
+        NoticeImeiPO n = noticeImeiRepo.getNoticeImei(imei, type);
+        if (n == null)
+            noticeImeiRepo.save(new NoticeImeiPO(imei, type, 0));
+    }
 
     public ProductPO getProduct(Long productId) {
         return productRepo.getProduct(productId);
