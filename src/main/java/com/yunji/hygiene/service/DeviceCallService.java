@@ -64,6 +64,8 @@ public class DeviceCallService {
             if (strategy == null)
                 throw new DeviceException(DeviceErrorEnum.CHECKED_202502, dto.getCmd(), dto.getImei());
             TransMsg transMsg = strategy.strategyTranMsg(dto);
+            if (transMsg == null)
+                return false;
             if (transMsg.getEventId() == -1)
                 dto.setEventId(-1);
             DataPacket packet = AbsChannelReadHandler.convertTransMsg(dto.getEventId(), channel, imei, transMsg);

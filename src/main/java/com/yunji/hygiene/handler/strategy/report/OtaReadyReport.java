@@ -46,10 +46,7 @@ public class OtaReadyReport extends AbsTranReportMsg {
             UpGradeFileDTO upGradeFileData = DeviceFileCache.getInfo(msg.getHeader().getImei());
             log.info("OtaReadyReport handleReport success :{}", upGradeFileData);
             UpgradeFilePO file = deviceService.getFile(upGradeFileData.getFileId());
-            boolean b = LockUtil.lockWithoutThread(CABINET_UPGRADE_LOCK + resp.getHeader().getImei(), 40, 80, TimeUnit.SECONDS);
-            if (!b) {
-                deviceService.startUpgrade(upGradeFileData.getInfoId());
-            }
+            deviceService.startUpgrade(upGradeFileData.getInfoId());
             byte[] fileBytes = file.getPack();
             otaTransMsg.setMessageType(TransEnum.OTA_DATA_RECEIVE.getIssueType());
             otaTransMsg.setMessageLength(fileBytes.length);

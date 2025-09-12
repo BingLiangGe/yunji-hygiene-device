@@ -7,8 +7,13 @@ import com.yunji.hygiene.entity.dto.UpGradeFileDTO;
 import com.yunji.hygiene.entity.enums.TransEnum;
 import com.yunji.hygiene.service.DeviceFileCache;
 import com.yunji.hygiene.util.JsonUtil;
+import com.yunji.hygiene.util.LockUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.TimeUnit;
+
+import static com.yunji.hygiene.constant.DeviceLockCode.CABINET_UPGRADE_LOCK;
 
 /**
  * @author : peter-zhu
@@ -22,6 +27,10 @@ public class UpgradeStrategy implements ITransMsgStrategy {
 
     @Override
     public TransMsg strategyTranMsg(EnterCommandDTO writeData) {
+        boolean b = LockUtil.lockWithoutThread(CABINET_UPGRADE_LOCK + writeData.getImei(), 40, 120, TimeUnit.SECONDS);
+        if (!b) {
+            return null;
+        }
         log.info("UpgradeStrategy strategyTranMsg getWriteData:{}", JsonUtil.toJsonString(writeData));
         UpGradeFileDTO info = DeviceFileCache.getInfo(writeData.getImei());
         log.info("UpgradeStrategy strategyTranMsg getInfo:{}", JsonUtil.toJsonString(info));

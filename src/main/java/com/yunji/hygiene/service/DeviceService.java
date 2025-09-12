@@ -265,6 +265,7 @@ public class DeviceService {
     }
 
     public void startUpgrade(Long infoId) {
+        upgradeTaskRepo.startUpgrade(infoId);
         upgradeInfoRepo.startUpgrade(infoId);
     }
 
