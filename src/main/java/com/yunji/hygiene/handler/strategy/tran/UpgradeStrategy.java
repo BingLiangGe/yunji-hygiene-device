@@ -29,6 +29,7 @@ public class UpgradeStrategy implements ITransMsgStrategy {
     public TransMsg strategyTranMsg(EnterCommandDTO writeData) {
         boolean b = LockUtil.lockWithoutThread(CABINET_UPGRADE_LOCK + writeData.getImei(), 40, 120, TimeUnit.SECONDS);
         if (!b) {
+            log.error("UpgradeStrategy strategyTranMsg the other data is leveling up :{}", JsonUtil.toJsonString(writeData));
             return null;
         }
         log.info("UpgradeStrategy strategyTranMsg getWriteData:{}", JsonUtil.toJsonString(writeData));
