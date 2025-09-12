@@ -11,6 +11,7 @@ import com.yunji.hygiene.entity.po.UpgradeFilePO;
 import com.yunji.hygiene.service.DeviceFileCache;
 import com.yunji.hygiene.service.DeviceService;
 import com.yunji.hygiene.util.JsonUtil;
+import com.yunji.hygiene.util.LockUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
+
+import static com.yunji.hygiene.constant.DeviceLockCode.CABINET_UPGRADE_LOCK;
 
 /**
  * @author : peter-zhu
@@ -35,12 +39,17 @@ public class OtaReadyReport extends AbsTranReportMsg {
     public TransReportDTO handleReport(ChannelHandlerContext ctx, ReportMsg msg) {
         UpgradeResp resp = (UpgradeResp) msg;
         if (DeviceConstant.SUCCESS.equals(resp.getResult())) {
+
             OtaTransMsg otaTransMsg = new OtaTransMsg();
             otaTransMsg.setEventId(-1);
             log.info("OtaReadyReport handleReport msg :{}", JsonUtil.toJsonString(msg));
             UpGradeFileDTO upGradeFileData = DeviceFileCache.getInfo(msg.getHeader().getImei());
             log.info("OtaReadyReport handleReport success :{}", upGradeFileData);
             UpgradeFilePO file = deviceService.getFile(upGradeFileData.getFileId());
+            boolean b = LockUtil.lockWithoutThread(CABINET_UPGRADE_LOCK + resp.getHeader().getImei(), 40, 80, TimeUnit.SECONDS);
+            if (!b) {
+                deviceService.startUpgrade(upGradeFileData.getInfoId());
+            }
             byte[] fileBytes = file.getPack();
             otaTransMsg.setMessageType(TransEnum.OTA_DATA_RECEIVE.getIssueType());
             otaTransMsg.setMessageLength(fileBytes.length);

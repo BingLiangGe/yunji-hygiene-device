@@ -6,6 +6,7 @@ import com.yunji.hygiene.config.ChannelManager;
 import com.yunji.hygiene.constant.DeviceCacheCode;
 import com.yunji.hygiene.constant.DeviceConstant;
 import com.yunji.hygiene.constant.DeviceLockCode;
+import com.yunji.hygiene.entity.dto.TransReportDTO;
 import com.yunji.hygiene.entity.dto.UpGradeFileDTO;
 import com.yunji.hygiene.entity.dto.UpgradeCommandDTO;
 import com.yunji.hygiene.entity.enums.OnlineStatus;
@@ -253,6 +254,10 @@ public class DeviceService {
 
     public BigDecimal getTypeHeight(String typeCode) {
         return typeRepository.getTypeHeight(typeCode);
+    }
+
+    public void startUpgrade(Long infoId) {
+        upgradeInfoRepo.startUpgrade(infoId);
     }
 
 //    public void updateHygieneCabinet(Long id, Integer rssi, Integer lockStatus) {
