@@ -26,6 +26,6 @@ public interface IUpgradeTaskRepo extends JpaRepository<UpgradeTaskPO, Long> {
     @Modifying
     @Query(value = "UPDATE tt_upgrade_task ts SET ts.task_status = 2,ts.start_time = NOW() " +
             " WHERE ts.task_code = ( SELECT task_code FROM tb_upgrade_info WHERE info_id =:infoId) " +
-            " AND ts.task_status IN (1) )", nativeQuery = true)
+            " AND ts.task_status IN (1) ", nativeQuery = true)
     void startUpgrade(@Param("infoId") Long infoId);
 }
