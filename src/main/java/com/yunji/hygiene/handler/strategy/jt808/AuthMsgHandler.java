@@ -1,6 +1,7 @@
 package com.yunji.hygiene.handler.strategy.jt808;
 
 import com.yunji.hygiene.config.ChannelManager;
+import com.yunji.hygiene.config.RedisCache;
 import com.yunji.hygiene.constant.DeviceCacheCode;
 import com.yunji.hygiene.constant.HandleConstant;
 import com.yunji.hygiene.entity.domain.DataPacket;
@@ -10,15 +11,17 @@ import com.yunji.hygiene.entity.dto.UpGradeFileDTO;
 import com.yunji.hygiene.entity.dto.UpgradeCommandDTO;
 import com.yunji.hygiene.entity.enums.TransStrategyEnum;
 import com.yunji.hygiene.service.DeviceCallService;
-import com.yunji.hygiene.service.DeviceFileCache;
 import com.yunji.hygiene.service.SystemUtil;
 import com.yunji.hygiene.util.JsonUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * @Author: peter
@@ -41,12 +44,25 @@ public class AuthMsgHandler extends AbsChannelReadHandler<AuthMsg> {
         ChannelManager.add(imei, ctx.channel());
         CommonResp resp = CommonResp.success(msg, getSerialNumber(ctx.channel()));
         log.info("AuthMsgHandler readData,imei:{} ", imei);
-        if (SystemUtil.redisCache().hasKey(DeviceCacheCode.DEVICE_UPGRADE_TASK + imei)) {
-            UpGradeFileDTO info = DeviceFileCache.getInfo(imei);
-            log.info("AuthMsgHandler hasKey DEVICE_UPGRADE_TASK start upgrade,imei:{} info:{}", imei, JsonUtil.toJsonString(info));
-            if (info != null)
-                deviceCallService.command(new UpgradeCommandDTO(TransStrategyEnum.DEVICE_GRADE.name(), -1, imei
-                        , info.getFileId(), info.getInfoId()));
+        RedisCache redisCache = SystemUtil.redisCache();
+        List<String> imeiInfoIdKeys = redisCache.scanPattern(DeviceCacheCode.DEVICE_UPGRADE_TASK + imei + ":*");
+        if (!CollectionUtils.isEmpty(imeiInfoIdKeys)) {
+            log.info("AuthMsgHandler readData scanPattern imei:{} ", imeiInfoIdKeys);
+            String maxImeiInfoIdKey = imeiInfoIdKeys.stream().max(Comparator.naturalOrder()).orElse(null);
+            if (maxImeiInfoIdKey != null) {
+                for (String imeiInfoIdKey : imeiInfoIdKeys) {
+                    if (!imeiInfoIdKey.equals(maxImeiInfoIdKey))
+                        redisCache.delete(imeiInfoIdKey);
+                }
+                String replace = maxImeiInfoIdKey.replace(DeviceCacheCode.DEVICE_UPGRADE_TASK + imei + ":", "");
+                Long infoId = Long.parseLong(replace);
+                Long fileId = deviceService.getFileByInfoId(infoId);
+                UpGradeFileDTO info = deviceService.createUpgradeCache(imei, infoId, fileId);
+                log.info("AuthMsgHandler hasKey DEVICE_UPGRADE_TASK start upgrade,imei:{} info:{}", imei, JsonUtil.toJsonString(info));
+                if (info != null)
+                    deviceCallService.command(new UpgradeCommandDTO(TransStrategyEnum.DEVICE_GRADE.name(), -1, imei
+                            , info.getFileId(), info.getInfoId()));
+            }
         }
         write(ctx, resp);
     }

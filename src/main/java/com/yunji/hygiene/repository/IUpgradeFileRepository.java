@@ -14,6 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
  **/
 public interface IUpgradeFileRepository extends JpaRepository<UpgradeFilePO, Long> {
 
+    @Query(value = " select file_id from tt_upgrade_task where task_code=(select task_code from tb_upgrade_info where info_id=:infoId) "
+            , nativeQuery = true)
+    Long getFileIdByInfoId(@Param("infoId") Long infoId);
+
 
     @Transactional
     @Query("SELECT u FROM UpgradeFilePO u WHERE u.id=:fileId")

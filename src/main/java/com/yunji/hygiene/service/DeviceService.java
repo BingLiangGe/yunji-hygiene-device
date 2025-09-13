@@ -6,7 +6,6 @@ import com.yunji.hygiene.config.ChannelManager;
 import com.yunji.hygiene.constant.DeviceCacheCode;
 import com.yunji.hygiene.constant.DeviceConstant;
 import com.yunji.hygiene.constant.DeviceLockCode;
-import com.yunji.hygiene.entity.dto.TransReportDTO;
 import com.yunji.hygiene.entity.dto.UpGradeFileDTO;
 import com.yunji.hygiene.entity.dto.UpgradeCommandDTO;
 import com.yunji.hygiene.entity.enums.OnlineStatus;
@@ -52,6 +51,10 @@ public class DeviceService {
     private IProductRepository productRepo;
     @Resource
     private INoticeImeiRepo noticeImeiRepo;
+
+    public Long getFileByInfoId(Long infoId) {
+        return upgradeFileRepo.getFileIdByInfoId(infoId);
+    }
 
     public void noticeImei(String imei, int type) {
         NoticeImeiPO n = noticeImeiRepo.getNoticeImei(imei, type);
@@ -229,9 +232,9 @@ public class DeviceService {
                 upgradeInfoRepo.finishTask(infoId);
                 upgradeTaskRepo.finishTask(infoId);
             }
-            SystemUtil.redisCache().delete(DeviceCacheCode.DEVICE_UPGRADE + imei);
             //删除升级任务
-            SystemUtil.redisCache().delete(DeviceCacheCode.DEVICE_UPGRADE_TASK + imei);
+            String infoKey = imei + ":" + infoId;
+            SystemUtil.redisCache().delete(DeviceCacheCode.DEVICE_UPGRADE_TASK + infoKey);
             // 解锁任务key
             LockUtil.unLockWithoutThread(DeviceLockCode.CABINET_UPGRADE_LOCK + imei);
             // DeviceFileCache.removeInfo(imei);
@@ -244,21 +247,27 @@ public class DeviceService {
 //    }
 
     public boolean createUpgradeCache(UpgradeCommandDTO cmd) {
-        UpgradeFilePO file = getFile(cmd.getFileId());
+        UpGradeFileDTO upgradeCache = createUpgradeCache(cmd.getImei(), cmd.getInfoId(), cmd.getFileId());
+        return upgradeCache != null;
+    }
+
+    public UpGradeFileDTO createUpgradeCache(String imei, Long infoId, Long fileId) {
+        UpgradeFilePO file = getFile(fileId);
         if (file == null)
-            return false;
+            return null;
         String versionPrefix = file.getFactoryBrand() + "-" + DeviceConstant.PROJECT_CODE + "-"
                 + file.getModelType() + "-" + file.getChipType();
         UpGradeFileDTO upGradeFileData = new UpGradeFileDTO();
-        upGradeFileData.setImei(cmd.getImei());
-        upGradeFileData.setFileId(cmd.getFileId());
-        upGradeFileData.setInfoId(cmd.getInfoId());
+        upGradeFileData.setImei(imei);
+        upGradeFileData.setFileId(fileId);
+        upGradeFileData.setInfoId(infoId);
         upGradeFileData.setVersion(file.getVersion());
         upGradeFileData.setVersionPrefix(versionPrefix);
         DeviceFileCache.createInfo(upGradeFileData);
         log.info("UpgradeStrategy strategyTranMsg ready upgrade data:{}", upGradeFileData);
-        return true;
+        return upGradeFileData;
     }
+
 
     public BigDecimal getTypeHeight(String typeCode) {
         return typeRepository.getTypeHeight(typeCode);

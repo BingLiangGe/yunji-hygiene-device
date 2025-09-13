@@ -12,7 +12,7 @@ public class DeviceCacheCode {
 
     public static final String DEVICE_SLEEP = DEVICE_CACHE_CODE + "sleep:";
 
-    public static final String DEVICE_UPGRADE = DEVICE_CACHE_CODE + "upgrade:";
+  //  public static final String DEVICE_UPGRADE = DEVICE_CACHE_CODE + "upgrade:";
 
     public static final String DEVICE_UPGRADE_FILE = DEVICE_CACHE_CODE + "upgrade:file:";
 
