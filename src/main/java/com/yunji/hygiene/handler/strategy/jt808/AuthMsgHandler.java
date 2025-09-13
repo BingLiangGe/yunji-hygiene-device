@@ -3,6 +3,7 @@ package com.yunji.hygiene.handler.strategy.jt808;
 import com.yunji.hygiene.config.ChannelManager;
 import com.yunji.hygiene.config.RedisCache;
 import com.yunji.hygiene.constant.DeviceCacheCode;
+import com.yunji.hygiene.constant.DeviceLockCode;
 import com.yunji.hygiene.constant.HandleConstant;
 import com.yunji.hygiene.entity.domain.DataPacket;
 import com.yunji.hygiene.entity.domain.req.jt808.AuthMsg;
@@ -46,7 +47,7 @@ public class AuthMsgHandler extends AbsChannelReadHandler<AuthMsg> {
         log.info("AuthMsgHandler readData,imei:{} ", imei);
         RedisCache redisCache = SystemUtil.redisCache();
         List<String> imeiInfoIdKeys = redisCache.scanPattern(DeviceCacheCode.DEVICE_UPGRADE_TASK + imei + ":*");
-        if (!CollectionUtils.isEmpty(imeiInfoIdKeys)) {
+        if (!CollectionUtils.isEmpty(imeiInfoIdKeys) &&  !redisCache.hasKey(DeviceLockCode.CABINET_UPGRADE_LOCK + imei)) {
             log.info("AuthMsgHandler readData scanPattern imei:{} ", imeiInfoIdKeys);
             String maxImeiInfoIdKey = imeiInfoIdKeys.stream().max(Comparator.naturalOrder()).orElse(null);
             if (maxImeiInfoIdKey != null) {

@@ -53,12 +53,13 @@ public class OtaDataReceiveReport extends AbsTranReportMsg {
                     EmptyTransMsg otaEop = new EmptyTransMsg();
                     otaEop.setEventId(-1);
                     otaEop.setMessageType(TransEnum.OTA_DATA_EOP.getIssueType());
+                    deviceService.finishTask(upGradeFileData.getImei());
                     return new TransReportDTO(true, true, otaEop);
                 }
                 log.info("OtaDataReceiveReport final startIndex:{},chunkSize:{}, fileBytes length:{},remainingBytes{}",
                         startIndex, chunkSize, fileBytes.length, remainingBytes);
-                // deviceService.finishTask(upGradeFileData.getImei());
                 System.arraycopy(fileBytes, startIndex, segment, 0, remainingBytes);
+                deviceService.finishTask(upGradeFileData.getImei());
             } else {
                 // 完整的片段，直接截取
                 segment = Arrays.copyOfRange(fileBytes, startIndex, endIndex);

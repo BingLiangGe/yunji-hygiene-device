@@ -231,12 +231,12 @@ public class DeviceService {
             if (infoId != null && infoId > 0) {
                 upgradeInfoRepo.finishTask(infoId);
                 upgradeTaskRepo.finishTask(infoId);
+                //删除升级任务
+                String infoKey = imei + ":" + infoId;
+                SystemUtil.redisCache().delete(DeviceCacheCode.DEVICE_UPGRADE_TASK + infoKey);
+                // 解锁任务key
+                LockUtil.unLockWithoutThread(DeviceLockCode.CABINET_UPGRADE_LOCK + imei);
             }
-            //删除升级任务
-            String infoKey = imei + ":" + infoId;
-            SystemUtil.redisCache().delete(DeviceCacheCode.DEVICE_UPGRADE_TASK + infoKey);
-            // 解锁任务key
-            LockUtil.unLockWithoutThread(DeviceLockCode.CABINET_UPGRADE_LOCK + imei);
             // DeviceFileCache.removeInfo(imei);
         }
     }

@@ -1,5 +1,6 @@
 package com.yunji.hygiene.handler.strategy.tran;
 
+import com.yunji.hygiene.constant.DeviceLockCode;
 import com.yunji.hygiene.entity.domain.req.jt808.TransMsg;
 import com.yunji.hygiene.entity.domain.req.trans.OtaReadyTransMsg;
 import com.yunji.hygiene.entity.dto.EnterCommandDTO;
@@ -10,11 +11,7 @@ import com.yunji.hygiene.util.JsonUtil;
 import com.yunji.hygiene.util.LockUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.concurrent.TimeUnit;
-
-import static com.yunji.hygiene.constant.DeviceLockCode.CABINET_UPGRADE_LOCK;
-
 /**
  * @author : peter-zhu
  * @date : 2025/2/12 15:03
@@ -27,7 +24,7 @@ public class UpgradeStrategy implements ITransMsgStrategy {
 
     @Override
     public TransMsg strategyTranMsg(EnterCommandDTO writeData) {
-        boolean b = LockUtil.lockWithoutThread(CABINET_UPGRADE_LOCK + writeData.getImei(), 40, 120, TimeUnit.SECONDS);
+        boolean b = LockUtil.lockWithoutThread(DeviceLockCode.CABINET_UPGRADE_LOCK + writeData.getImei(), 40, 120, TimeUnit.SECONDS);
         if (!b) {
             log.error("UpgradeStrategy strategyTranMsg the other data is leveling up :{}", JsonUtil.toJsonString(writeData));
             return null;

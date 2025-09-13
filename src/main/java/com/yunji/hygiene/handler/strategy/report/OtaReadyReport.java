@@ -11,17 +11,13 @@ import com.yunji.hygiene.entity.po.UpgradeFilePO;
 import com.yunji.hygiene.service.DeviceFileCache;
 import com.yunji.hygiene.service.DeviceService;
 import com.yunji.hygiene.util.JsonUtil;
-import com.yunji.hygiene.util.LockUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
-import static com.yunji.hygiene.constant.DeviceLockCode.CABINET_UPGRADE_LOCK;
 
 /**
  * @author : peter-zhu
