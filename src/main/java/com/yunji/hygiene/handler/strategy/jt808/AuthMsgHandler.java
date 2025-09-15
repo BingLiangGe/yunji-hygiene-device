@@ -19,7 +19,6 @@ import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-
 import javax.annotation.Resource;
 import java.util.Comparator;
 import java.util.List;
@@ -41,7 +40,6 @@ public class AuthMsgHandler extends AbsChannelReadHandler<AuthMsg> {
     @Override
     protected void readData(ChannelHandlerContext ctx, DataPacket msg) {
         String imei = msg.getHeader().getImei();
-        deviceService.cabinetOnline(imei);
         ChannelManager.add(imei, ctx.channel());
         CommonResp resp = CommonResp.success(msg, getSerialNumber(ctx.channel()));
         log.info("AuthMsgHandler readData,imei:{} ", imei);
@@ -65,6 +63,7 @@ public class AuthMsgHandler extends AbsChannelReadHandler<AuthMsg> {
                             , info.getFileId(), info.getInfoId()));
             }
         }
+        deviceService.cabinetOnline(imei);
         write(ctx, resp);
     }
 }

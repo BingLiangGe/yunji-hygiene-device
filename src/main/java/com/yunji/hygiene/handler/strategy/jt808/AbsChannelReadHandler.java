@@ -42,7 +42,7 @@ public abstract class AbsChannelReadHandler<T extends DataPacket> {
     }
 
     public void write(ChannelHandlerContext ctx, DataPacket msg) {
-        log.debug("发送硬件tcp消息:{}", msg.toString());
+        log.info("发送硬件tcp消息:{}", msg.toString());
         ctx.writeAndFlush(msg).addListener(future -> {
             if (!future.isSuccess()) {
                 log.error("发送硬件tcp失败", future.cause());
