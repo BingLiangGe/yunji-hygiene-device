@@ -10,25 +10,52 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 
 /**
- * @author : peter-zhu
- * @date : 2025/1/25 21:50
- * @description : TODO
- **/
+ * IDeviceEventRepository：设备事件表（DeviceEventPO）JPA 数据访问接口
+ *
+ * 主要用途：
+ * - 查询事件更新时间（用于判断“最近是否有事件在执行/更新”）
+ * - 标记事件完成（finishStatus=1）
+ * - 更新事件执行后的回执数据（afterCmd + updateTime）
+ * - 插入“异常开门”等系统事件（native insert-select 从柜子表补齐上下文信息）
+ */
 public interface IDeviceEventRepository extends JpaRepository<DeviceEventPO, Long> {
 
-    @Query("select updateTime from DeviceEventPO  where  id=:eventId")
+    /**
+     * 查询事件的更新时间（updateTime）
+     * - 用于判断事件是否在一定时间窗口内仍有效（例如 10 分钟内的事件才允许更新）
+     */
+    @Query("select updateTime from DeviceEventPO where id=:eventId")
     Date getUpdateTime(@Param("eventId") Long eventId);
 
+    /**
+     * 事件完成：finishStatus=1，并更新时间 updateTime
+     *
+     * @return 更新条数（通常 1）
+     */
     @Transactional
     @Modifying
     @Query("update DeviceEventPO set finishStatus=1,updateTime=:finishTime where id=:eventId")
     int eventFinish(@Param("eventId") Long eventId, @Param("finishTime") Date finishTime);
 
+    /**
+     * 更新事件回执（after_cmd）与更新时间（update_time）
+     * - 这里使用 nativeQuery，表字段是 event_id / after_cmd / update_time
+     */
     @Transactional
     @Modifying
     @Query(value = "update tl_device_event set after_cmd=:afterCmd,update_time=:updateTime where event_id=:eventId", nativeQuery = true)
     int updateEvent(@Param("eventId") Long eventId, @Param("afterCmd") String afterCmd, @Param("updateTime") Date updateTime);
 
+    /**
+     * 插入一条“异常开门/异常事件”记录（native insert-select）
+     * - 从柜子表 t_container 及相关站点/代理/点位表中补齐 belong/agent/site/location 等信息
+     * - after_cmd 写入设备上报内容（用于追溯）
+     * - finish_status=1（表示该异常事件记录插入即完成）
+     *
+     * @param imei     设备IMEI
+     * @param afterCmd 设备上报/事件内容（通常是 JSON 或上报结构体）
+     * @return 插入条数（通常 1）
+     */
     @Transactional
     @Modifying
     @Query(value = "insert into `tl_device_event` (" +
@@ -44,5 +71,4 @@ public interface IDeviceEventRepository extends JpaRepository<DeviceEventPO, Lon
             " left join tm_site_location l on l.location_id=c.location_id " +
             "where c.del_flag=0 and c.chip_imei=:imei", nativeQuery = true)
     int addEvent(@Param("imei") String imei, @Param("afterCmd") String afterCmd);
-
 }
