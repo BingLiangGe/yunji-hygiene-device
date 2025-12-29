@@ -225,8 +225,8 @@ public class WetWipeInfoReport extends AbsTranReportMsg {
 
                 // ----------------------- 5）一致性校验：系统库存 vs 设备探测 -----------------------
                 // 校验规则：
-                // 1) 系统库存 >0，但设备探测=0 => “系统认为有货，但设备认为没货”
-                // 2) 系统库存 =0，但设备探测=1 => “系统认为没货，但设备认为有货”
+                // 1) 系统库存 >0，但设备探测是否有货=0 => “系统认为有货，但设备认为没货”
+                // 2) 系统库存 =0，但设备探测是否有货=1 => “系统认为没货，但设备认为有货”
                 // 满足任一则认为“商品数量异常”，写运行异常并通知
                 if ((devInfo.getProductQuantity() > 0 && devInfo.getTissueStatus() == 0) ||
                         (devInfo.getProductQuantity() == 0 && devInfo.getTissueStatus() == 1)) {

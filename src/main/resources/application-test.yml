@@ -3,13 +3,13 @@ spring:
   # redis 配置
   redis:
     # 地址
-    host: 117.21.14.222
+    host: ccc
     # 端口，默认为6379
     port: 16379
     # 数据库索引
     database: 4
     # 密码
-    password: kzV70wTxAiIlY3Jv20251125
+    password: ccc
     # 连接超时时间
     timeout: 50000
     lettuce:
@@ -31,7 +31,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: qwe123!@#20251125
-    url: jdbc:mysql://117.21.14.222:3380/hygiene?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+    url: jdbc:mysql://cccc:cc/hygience?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
     hikari:
       # 最大连接池大小
       maximum-pool-size: 30
